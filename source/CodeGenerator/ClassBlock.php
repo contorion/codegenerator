@@ -102,7 +102,7 @@ class ClassBlock extends Block
             }
         }
         foreach ($reflection->getConstants() as $name => $value) {
-            if (!$reflection->getParentClass()->hasConstant($name)) {
+            if (!$reflection->getParentClass() || ($reflection->getParentClass() && !$reflection->getParentClass()->hasConstant($name))) {
                 $class->addConstant(new ConstantBlock($name, $value));
             }
         }

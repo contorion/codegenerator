@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGeneratormocks;
+namespace CodeGeneratorMocks;
 
 abstract class MockAbstractClass implements \Countable
 {

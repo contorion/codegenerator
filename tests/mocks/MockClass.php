@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGeneratormocks;
+namespace CodeGeneratorMocks;
 
 class MockClass extends \CodeGeneratorMocks\MockAbstractClass
 {

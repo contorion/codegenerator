@@ -18,9 +18,6 @@ class InterfaceTest extends \PHPUnit_Framework_TestCase
 
         $actual = $file->dump();
         $expected = file_get_contents($reflectionClass->getFileName());
-
-        echo $expected;
-        echo $actual;
         $this->assertSame($expected, $actual);
     }
 
@@ -34,9 +31,6 @@ class InterfaceTest extends \PHPUnit_Framework_TestCase
 
         $actual = $file->dump();
         $expected = file_get_contents($reflectionClass->getFileName());
-
-        echo $expected;
-        echo $actual;
         $this->assertSame($expected, $actual);
     }
 

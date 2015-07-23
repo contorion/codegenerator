@@ -1,8 +1,8 @@
 <?php
 
-namespace CodeGeneratormocks;
+namespace CodeGeneratorMocks;
 
-interface MockInterface extends \CodeGeneratorMocks\MockInterfaceTwo
+interface MockInterface
 {
     public function withTypeHinting(\Countable $countable, array $array, callable $callable);
 
