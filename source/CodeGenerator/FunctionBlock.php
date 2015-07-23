@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-class FunctionBlock extends Block {
-
+class FunctionBlock extends Block
+{
     /** @var string|null */
     protected $_name;
 
@@ -19,7 +19,8 @@ class FunctionBlock extends Block {
     /**
      * @param callable|string|null $body
      */
-    public function __construct($body = null) {
+    public function __construct($body = null)
+    {
         if (null !== $body) {
             if ($body instanceof \Closure) {
                 $this->extractFromClosure($body);
@@ -32,24 +33,28 @@ class FunctionBlock extends Block {
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->_name = (string) $name;
     }
 
     /**
      * @return string|null
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
     /**
      * @param ParameterBlock $parameter
+     *
      * @throws \Exception
      */
-    public function addParameter(ParameterBlock $parameter) {
+    public function addParameter(ParameterBlock $parameter)
+    {
         if (array_key_exists($parameter->getName(), $this->_parameters)) {
-            throw new \Exception('Parameter `' . $parameter->getName() . '` is already set.');
+            throw new \Exception('Parameter `'.$parameter->getName().'` is already set.');
         }
         $this->_parameters[$parameter->getName()] = $parameter;
     }
@@ -57,7 +62,8 @@ class FunctionBlock extends Block {
     /**
      * @param string $code
      */
-    public function setCode($code) {
+    public function setCode($code)
+    {
         if (null !== $code) {
             $code = $this->_outdent((string) $code, true);
         }
@@ -67,7 +73,8 @@ class FunctionBlock extends Block {
     /**
      * @param string|null $docBlock
      */
-    public function setDocBlock($docBlock) {
+    public function setDocBlock($docBlock)
+    {
         if (null !== $docBlock) {
             $docBlock = (string) $docBlock;
         }
@@ -77,10 +84,12 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setBodyFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setBodyFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         /** @var $reflection \ReflectionMethod */
         if (is_a($reflection, '\\ReflectionMethod') && $reflection->isAbstract()) {
             $this->_code = null;
+
             return;
         }
         $file = new \SplFileObject($reflection->getFileName());
@@ -110,7 +119,8 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setParametersFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setParametersFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         foreach ($reflection->getParameters() as $reflectionParameter) {
             $parameter = ParameterBlock::buildFromReflection($reflectionParameter);
             $this->addParameter($parameter);
@@ -120,57 +130,65 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setDocBlockFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setDocBlockFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         $docBlock = $reflection->getDocComment();
         if ($docBlock) {
-            $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
+            $docBlock = preg_replace('/([\n\r])('.self::$_indentation.')+/', '$1', $docBlock);
             $this->setDocBlock($docBlock);
         }
     }
 
-    public function dump() {
+    public function dump()
+    {
         return $this->_dumpLine(
             $this->_dumpDocBlock(),
-            $this->_dumpHeader() . $this->_dumpBody()
+            $this->_dumpHeader().$this->_dumpBody()
         );
     }
 
     /**
      * @return string
      */
-    protected function _dumpDocBlock() {
+    protected function _dumpDocBlock()
+    {
         return $this->_docBlock;
     }
 
     /**
      * @return string
      */
-    protected function _dumpHeader() {
+    protected function _dumpHeader()
+    {
         $content = 'function';
         if ($this->_name) {
-            $content .= ' ' . $this->_name;
+            $content .= ' '.$this->_name;
         }
         $content .= '(';
         $content .= implode(', ', $this->_parameters);
         $content .= ')';
+
         return $content;
     }
 
     /**
      * @return string
      */
-    protected function _dumpBody() {
+    protected function _dumpBody()
+    {
         $code = $this->_code;
         if ($code) {
             $code = $this->_indent($code);
         }
+
         return $this->_dumpLine(' {', $code, '}');
     }
 
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function extractFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function extractFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         $this->setBodyFromReflection($reflection);
         $this->setParametersFromReflection($reflection);
         $this->setDocBlockFromReflection($reflection);
@@ -179,7 +197,8 @@ class FunctionBlock extends Block {
     /**
      * @param \Closure $closure
      */
-    public function extractFromClosure(\Closure $closure) {
+    public function extractFromClosure(\Closure $closure)
+    {
         $this->extractFromReflection(new \ReflectionFunction($closure));
     }
 }

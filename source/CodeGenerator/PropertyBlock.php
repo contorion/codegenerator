@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-class PropertyBlock extends Block {
-
+class PropertyBlock extends Block
+{
     /** @var string */
     private $_name;
 
@@ -19,7 +19,8 @@ class PropertyBlock extends Block {
     /**
      * @param string $name
      */
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->_name = (string) $name;
         $this->setVisibility('public');
     }
@@ -27,35 +28,40 @@ class PropertyBlock extends Block {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
     /**
      * @param string $visibility
      */
-    public function setVisibility($visibility) {
+    public function setVisibility($visibility)
+    {
         $this->_visibility = (string) $visibility;
     }
 
     /**
      * @param mixed $value
      */
-    public function setDefaultValue($value) {
+    public function setDefaultValue($value)
+    {
         $this->_defaultValue = $value;
     }
 
     /**
      * @param string|null $docBlock
      */
-    public function setDocBlock($docBlock) {
+    public function setDocBlock($docBlock)
+    {
         if (null !== $docBlock) {
             $docBlock = (string) $docBlock;
         }
         $this->_docBlock = $docBlock;
     }
 
-    public function dump() {
+    public function dump()
+    {
         return $this->_dumpLine(
             $this->_dumpDocBlock(),
             $this->_dumpValue()
@@ -65,7 +71,8 @@ class PropertyBlock extends Block {
     /**
      * @param \ReflectionProperty $reflection
      */
-    public function extractFromReflection(\ReflectionProperty $reflection) {
+    public function extractFromReflection(\ReflectionProperty $reflection)
+    {
         $this->_setVisibilityFromReflection($reflection);
         $this->_setDefaultValueFromReflection($reflection);
         $this->_setDocBlockFromReflection($reflection);
@@ -74,27 +81,31 @@ class PropertyBlock extends Block {
     /**
      * @return string
      */
-    protected function _dumpDocBlock() {
+    protected function _dumpDocBlock()
+    {
         return $this->_docBlock;
     }
 
     /**
      * @return string
      */
-    protected function _dumpValue() {
-        $content = $this->_visibility . ' $' . $this->_name;
+    protected function _dumpValue()
+    {
+        $content = $this->_visibility.' $'.$this->_name;
         if (null !== $this->_defaultValue) {
             $value = new ValueBlock($this->_defaultValue);
-            $content .= ' = ' . $value->dump();
+            $content .= ' = '.$value->dump();
         }
         $content .= ';';
+
         return $content;
     }
 
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setVisibilityFromReflection(\ReflectionProperty $reflection) {
+    protected function _setVisibilityFromReflection(\ReflectionProperty $reflection)
+    {
         if ($reflection->isPublic()) {
             $this->setVisibility('public');
         }
@@ -106,10 +117,11 @@ class PropertyBlock extends Block {
         }
     }
 
-    protected function _setDocBlockFromReflection(\ReflectionProperty $reflection) {
+    protected function _setDocBlockFromReflection(\ReflectionProperty $reflection)
+    {
         $docBlock = $reflection->getDocComment();
         if ($docBlock) {
-            $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
+            $docBlock = preg_replace('/([\n\r])('.self::$_indentation.')+/', '$1', $docBlock);
             $this->setDocBlock($docBlock);
         }
     }
@@ -117,7 +129,8 @@ class PropertyBlock extends Block {
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setDefaultValueFromReflection(\ReflectionProperty $reflection) {
+    protected function _setDefaultValueFromReflection(\ReflectionProperty $reflection)
+    {
         $defaultProperties = $reflection->getDeclaringClass()->getDefaultProperties();
         $value = $defaultProperties[$this->getName()];
         if (null !== $value) {
@@ -127,9 +140,11 @@ class PropertyBlock extends Block {
 
     /**
      * @param \ReflectionProperty $reflection
+     *
      * @return PropertyBlock
      */
-    public static function buildFromReflection(\ReflectionProperty $reflection) {
+    public static function buildFromReflection(\ReflectionProperty $reflection)
+    {
         $property = new self($reflection->getName());
         $property->extractFromReflection($reflection);
         // $property->setDefaultValue($reflection->getValue());

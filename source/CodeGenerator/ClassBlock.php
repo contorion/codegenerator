@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-class ClassBlock extends Block {
-
+class ClassBlock extends Block
+{
     /** @var string */
     private $_name;
 
@@ -28,7 +28,7 @@ class ClassBlock extends Block {
     /** @var MethodBlock[] */
     private $_methods = array();
 
-    /** @var boolean */
+    /** @var bool */
     private $_abstract;
 
     /**
@@ -36,7 +36,8 @@ class ClassBlock extends Block {
      * @param string|null $parentClassName
      * @param array|null  $interfaces
      */
-    public function __construct($name, $parentClassName = null, array $interfaces = null) {
+    public function __construct($name, $parentClassName = null, array $interfaces = null)
+    {
         $this->_name = (string) $name;
         if (null !== $parentClassName) {
             $this->setParentClassName($parentClassName);
@@ -49,79 +50,90 @@ class ClassBlock extends Block {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
     /**
      * @param string $parentClassName
      */
-    public function setParentClassName($parentClassName) {
+    public function setParentClassName($parentClassName)
+    {
         $this->_parentClassName = (string) $parentClassName;
     }
 
     /**
      * @param string $namespace
      */
-    public function setNamespace($namespace) {
+    public function setNamespace($namespace)
+    {
         $this->_namespace = (string) $namespace;
     }
 
     /**
      * @param string[] $interfaces
      */
-    public function setInterfaces(array $interfaces) {
+    public function setInterfaces(array $interfaces)
+    {
         foreach ($interfaces as $interface) {
             $this->addInterface($interface);
         }
     }
 
     /**
-     * @param boolean $abstract
+     * @param bool $abstract
      */
-    public function setAbstract($abstract) {
+    public function setAbstract($abstract)
+    {
         $this->_abstract = (bool) $abstract;
     }
 
     /**
      * @param string $name
      */
-    public function addUse($name) {
+    public function addUse($name)
+    {
         $this->_uses[] = $name;
     }
 
     /**
      * @param ConstantBlock $constant
      */
-    public function addConstant(ConstantBlock $constant) {
+    public function addConstant(ConstantBlock $constant)
+    {
         $this->_constants[$constant->getName()] = $constant;
     }
 
     /**
      * @param PropertyBlock $property
      */
-    public function addProperty(PropertyBlock $property) {
+    public function addProperty(PropertyBlock $property)
+    {
         $this->_properties[$property->getName()] = $property;
     }
 
     /**
      * @param MethodBlock $method
      */
-    public function addMethod(MethodBlock $method) {
+    public function addMethod(MethodBlock $method)
+    {
         $this->_methods[$method->getName()] = $method;
     }
 
     /**
      * @param string $interface
      */
-    public function addInterface($interface) {
+    public function addInterface($interface)
+    {
         $this->_interfaces[] = $interface;
     }
 
     /**
      * @return string
      */
-    public function dump() {
+    public function dump()
+    {
         $lines = array();
         $lines[] = $this->_dumpHeader();
         foreach ($this->_uses as $use) {
@@ -141,56 +153,63 @@ class ClassBlock extends Block {
             $lines[] = $this->_indent($method->dump());
         }
         $lines[] = $this->_dumpFooter();
+
         return $this->_dumpLines($lines);
     }
 
     /**
      * @return string
      */
-    private function _dumpHeader() {
+    private function _dumpHeader()
+    {
         $lines = array();
         if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
+            $lines[] = 'namespace '.$this->_namespace.';';
             $lines[] = '';
         }
         $classDeclaration = '';
         if ($this->_abstract) {
             $classDeclaration .= 'abstract ';
         }
-        $classDeclaration .= 'class ' . $this->_name;
+        $classDeclaration .= 'class '.$this->_name;
         if ($this->_parentClassName) {
-            $classDeclaration .= ' extends ' . $this->_getParentClassName();
+            $classDeclaration .= ' extends '.$this->_getParentClassName();
         }
         if ($this->_interfaces) {
-            $classDeclaration .= ' implements ' . implode(', ', $this->_getInterfaces());
+            $classDeclaration .= ' implements '.implode(', ', $this->_getInterfaces());
         }
         $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
+
         return $this->_dumpLines($lines);
     }
 
     /**
      * @return string[]
      */
-    private function _getInterfaces() {
+    private function _getInterfaces()
+    {
         return array_map(array('\\CodeGenerator\\ClassBlock', '_normalizeClassName'), $this->_interfaces);
     }
 
     /**
      * @return string
      */
-    private  function _getParentClassName() {
+    private function _getParentClassName()
+    {
         return self::_normalizeClassName($this->_parentClassName);
     }
 
     /**
      * @return string
      */
-    private function _dumpFooter() {
+    private function _dumpFooter()
+    {
         return '}';
     }
 
-    public static function buildFromReflection(\ReflectionClass $reflection) {
+    public static function buildFromReflection(\ReflectionClass $reflection)
+    {
         $class = new self($reflection->getShortName());
         $class->setNamespace($reflection->getNamespaceName());
         $reflectionParentClass = $reflection->getParentClass();
@@ -222,6 +241,7 @@ class ClassBlock extends Block {
                 $class->addConstant(new ConstantBlock($name, $value));
             }
         }
+
         return $class;
     }
 }

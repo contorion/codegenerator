@@ -2,22 +2,23 @@
 
 namespace CodeGenerator;
 
-class MethodBlock extends FunctionBlock {
-
+class MethodBlock extends FunctionBlock
+{
     /** @var string */
     private $_visibility;
 
-    /** @var boolean */
+    /** @var bool */
     private $_static;
 
-    /** @var boolean */
+    /** @var bool */
     private $_abstract;
 
     /**
      * @param string               $name
      * @param callable|string|null $body
      */
-    public function __construct($name, $body = null) {
+    public function __construct($name, $body = null)
+    {
         $this->setName($name);
         $this->setVisibility('public');
         $this->setStatic(false);
@@ -28,28 +29,32 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param string $visibility
      */
-    public function setVisibility($visibility) {
+    public function setVisibility($visibility)
+    {
         $this->_visibility = (string) $visibility;
     }
 
     /**
-     * @param boolean $static
+     * @param bool $static
      */
-    public function setStatic($static) {
+    public function setStatic($static)
+    {
         $this->_static = (bool) $static;
     }
 
     /**
-     * @param boolean $abstract
+     * @param bool $abstract
      */
-    public function setAbstract($abstract) {
+    public function setAbstract($abstract)
+    {
         $this->_abstract = (bool) $abstract;
     }
 
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function extractFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function extractFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         parent::extractFromReflection($reflection);
         if ($reflection instanceof \ReflectionMethod) {
             $this->setVisibilityFromReflection($reflection);
@@ -61,7 +66,8 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setVisibilityFromReflection(\ReflectionMethod $reflection) {
+    public function setVisibilityFromReflection(\ReflectionMethod $reflection)
+    {
         if ($reflection->isPublic()) {
             $this->setVisibility('public');
         }
@@ -76,18 +82,21 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setAbstractFromReflection(\ReflectionMethod $reflection) {
+    public function setAbstractFromReflection(\ReflectionMethod $reflection)
+    {
         $this->setAbstract($reflection->isAbstract());
     }
 
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setStaticFromReflection(\ReflectionMethod $reflection) {
+    public function setStaticFromReflection(\ReflectionMethod $reflection)
+    {
         $this->setStatic($reflection->isStatic());
     }
 
-    protected function _dumpHeader() {
+    protected function _dumpHeader()
+    {
         $code = '';
         if ($this->_abstract) {
             $code .= 'abstract ';
@@ -96,24 +105,30 @@ class MethodBlock extends FunctionBlock {
         if ($this->_static) {
             $code .= ' static';
         }
-        $code .= ' ' . parent::_dumpHeader();
+        $code .= ' '.parent::_dumpHeader();
+
         return $code;
     }
 
-    protected function _dumpBody() {
+    protected function _dumpBody()
+    {
         if ($this->_abstract) {
             return ';';
         }
+
         return parent::_dumpBody();
     }
 
     /**
      * @param \ReflectionMethod $reflection
+     *
      * @return MethodBlock
      */
-    public static function buildFromReflection(\ReflectionMethod $reflection) {
+    public static function buildFromReflection(\ReflectionMethod $reflection)
+    {
         $method = new self($reflection->getName());
         $method->extractFromReflection($reflection);
+
         return $method;
     }
 }

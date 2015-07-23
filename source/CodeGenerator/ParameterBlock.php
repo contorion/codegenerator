@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-class ParameterBlock extends Block {
-
+class ParameterBlock extends Block
+{
     /** @var string */
     private $_name;
 
@@ -13,22 +13,25 @@ class ParameterBlock extends Block {
     /** @var mixed */
     private $_defaultValue;
 
-    /** @var boolean */
+    /** @var bool */
     private $_optional;
 
-    /** @var boolean */
+    /** @var bool */
     private $_passedByReference;
 
     /**
-     * @param string       $name
-     * @param string|null  $type
-     * @param null         $optional
-     * @param mixed|null   $defaultValue
-     * @param boolean|null $passedByReference
+     * @param string      $name
+     * @param string|null $type
+     * @param null        $optional
+     * @param mixed|null  $defaultValue
+     * @param bool|null   $passedByReference
+     *
      * @throws \Exception
+     *
      * @internal param bool|null $isOptional
      */
-    public function __construct($name, $type = null, $optional = null, $defaultValue = null, $passedByReference = null) {
+    public function __construct($name, $type = null, $optional = null, $defaultValue = null, $passedByReference = null)
+    {
         $this->_name = (string) $name;
         if (null !== $type) {
             $this->_type = (string) $type;
@@ -46,52 +49,61 @@ class ParameterBlock extends Block {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
     /**
      * @return string
      */
-    public function dump() {
+    public function dump()
+    {
         $content = '';
         if ($this->_type) {
-            $content .= $this->_getType() . ' ';
+            $content .= $this->_getType().' ';
         }
         if ($this->_passedByReference) {
             $content .= '&';
         }
-        $content .= '$' . $this->_name;
+        $content .= '$'.$this->_name;
         if ($this->_optional) {
-            $content .= ' = ' . $this->_dumpDefaultValue();
+            $content .= ' = '.$this->_dumpDefaultValue();
         }
+
         return $content;
     }
 
-    protected function _dumpDefaultValue() {
+    protected function _dumpDefaultValue()
+    {
         if (null === $this->_defaultValue) {
             return 'null';
         }
         $value = new ValueBlock($this->_defaultValue);
+
         return $value->dump();
     }
 
     /**
      * @return null|string
      */
-    protected function _getType() {
+    protected function _getType()
+    {
         $type = $this->_type;
         if (!in_array($type, [null, 'array', 'callable'], true)) {
             $type = self::_normalizeClassName($type);
         }
+
         return $type;
     }
 
     /**
      * @param \ReflectionParameter $reflection
+     *
      * @return ParameterBlock
      */
-    public static function buildFromReflection(\ReflectionParameter $reflection) {
+    public static function buildFromReflection(\ReflectionParameter $reflection)
+    {
         $type = null;
         if ($reflection->isCallable()) {
             $type = 'callable';
@@ -106,6 +118,7 @@ class ParameterBlock extends Block {
         if ($reflection->isDefaultValueAvailable()) {
             $defaultValue = $reflection->getDefaultValue();
         }
+
         return new self($reflection->getName(), $type, $reflection->isOptional(), $defaultValue, $reflection->isPassedByReference());
     }
 }

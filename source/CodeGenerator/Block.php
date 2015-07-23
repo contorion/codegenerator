@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-abstract class Block {
-
+abstract class Block
+{
     /** @var string */
     protected static $_indentation = '    ';
 
@@ -12,24 +12,29 @@ abstract class Block {
      */
     abstract public function dump();
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->dump();
     }
 
     /**
      * @param string $content
+     *
      * @return string
      */
-    protected function _indent($content) {
-        return preg_replace('/(:?^|[\n])/', '$1' . self::$_indentation, $content);
+    protected function _indent($content)
+    {
+        return preg_replace('/(:?^|[\n])/', '$1'.self::$_indentation, $content);
     }
 
     /**
-     * @param string       $content
-     * @param boolean|null $untilUnsafe
+     * @param string    $content
+     * @param bool|null $untilUnsafe
+     *
      * @return string
      */
-    protected function _outdent($content, $untilUnsafe = null) {
+    protected function _outdent($content, $untilUnsafe = null)
+    {
         $indentation = self::$_indentation;
         if (!$indentation) {
             return $content;
@@ -47,29 +52,35 @@ abstract class Block {
             }
         }
         foreach ($lines as $key => $line) {
-            $lines[$key] = preg_replace('/^' . preg_quote(self::$_indentation) . '/', '$1', $line);
+            $lines[$key] = preg_replace('/^'.preg_quote(self::$_indentation).'/', '$1', $line);
         }
         $content = implode(PHP_EOL, $lines);
         if ($untilUnsafe) {
             $content = $this->_outdent($content, $untilUnsafe);
         }
+
         return $content;
     }
 
     /**
      * @param string $line , $line, $line
+     *
      * @return string
      */
-    protected function _dumpLine($line) {
+    protected function _dumpLine($line)
+    {
         $lines = func_get_args();
+
         return $this->_dumpLines($lines);
     }
 
     /**
      * @param string[] $lines
+     *
      * @return string
      */
-    protected function _dumpLines(array $lines) {
+    protected function _dumpLines(array $lines)
+    {
         return implode(PHP_EOL, array_filter($lines, function ($element) {
             return !is_null($element);
         }));
@@ -78,18 +89,22 @@ abstract class Block {
     /**
      * @param string $indentation
      */
-    public static function setIndentation($indentation) {
+    public static function setIndentation($indentation)
+    {
         self::$_indentation = (string) $indentation;
     }
 
     /**
      * @param string $className
+     *
      * @return string
      */
-    protected static function _normalizeClassName($className) {
+    protected static function _normalizeClassName($className)
+    {
         if (strpos($className, '\\') !== 0) {
-            $className = '\\' . $className;
+            $className = '\\'.$className;
         }
+
         return $className;
     }
 }

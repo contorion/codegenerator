@@ -24,7 +24,7 @@ class TraitBlock extends Block
      */
     public function __construct($name)
     {
-        $this->_name = (string)$name;
+        $this->_name = (string) $name;
     }
 
     /**
@@ -40,7 +40,7 @@ class TraitBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string)$namespace;
+        $this->_namespace = (string) $namespace;
     }
 
     /**
@@ -98,10 +98,10 @@ class TraitBlock extends Block
     {
         $lines = [];
         if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
+            $lines[] = 'namespace '.$this->_namespace.';';
             $lines[] = '';
         }
-        $classDeclaration = 'trait ' . $this->_name;
+        $classDeclaration = 'trait '.$this->_name;
         $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
 
@@ -118,6 +118,7 @@ class TraitBlock extends Block
 
     /**
      * @param \ReflectionClass $reflection
+     *
      * @return TraitBlock
      */
     public static function buildFromReflection(\ReflectionClass $reflection)

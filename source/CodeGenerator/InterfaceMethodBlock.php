@@ -18,7 +18,7 @@ class InterfaceMethodBlock extends FunctionBlock
      */
     protected function _dumpHeader()
     {
-        return 'public ' . parent::_dumpHeader();
+        return 'public '.parent::_dumpHeader();
     }
 
     /**
@@ -31,6 +31,7 @@ class InterfaceMethodBlock extends FunctionBlock
 
     /**
      * @param \ReflectionMethod $reflection
+     *
      * @return InterfaceMethodBlock
      */
     public static function buildFromReflection(\ReflectionMethod $reflection)

@@ -25,7 +25,7 @@ class InterfaceBlock extends Block
      */
     public function __construct($name, array $parentInterfaceNames = null)
     {
-        $this->_name = (string)$name;
+        $this->_name = (string) $name;
 
         if (!is_null($parentInterfaceNames)) {
             $this->setParentInterfaceNames($parentInterfaceNames);
@@ -47,11 +47,12 @@ class InterfaceBlock extends Block
      */
     public function addParentInterfaceName($parentInterfaceName)
     {
-        $this->_parentInterfaceNames[] = (string)$parentInterfaceName;
+        $this->_parentInterfaceNames[] = (string) $parentInterfaceName;
     }
 
     /**
      * @param \ReflectionClass $reflection
+     *
      * @return InterfaceBlock
      */
     public static function buildFromReflection(\ReflectionClass $reflection)
@@ -93,7 +94,7 @@ class InterfaceBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string)$namespace;
+        $this->_namespace = (string) $namespace;
     }
 
     /**
@@ -114,6 +115,7 @@ class InterfaceBlock extends Block
 
     /**
      * @param \ReflectionClass $reflection
+     *
      * @return array
      */
     protected static function getAllConstantsOfParentInterfaces(\ReflectionClass $reflection)
@@ -164,13 +166,13 @@ class InterfaceBlock extends Block
     {
         $lines = array();
         if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
+            $lines[] = 'namespace '.$this->_namespace.';';
             $lines[] = '';
         }
         $classDeclaration = '';
-        $classDeclaration .= 'interface ' . $this->_name;
+        $classDeclaration .= 'interface '.$this->_name;
         if ($this->_parentInterfaceNames) {
-            $classDeclaration .= ' extends ' . $this->_getParentInterfaces();
+            $classDeclaration .= ' extends '.$this->_getParentInterfaces();
         }
         $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
@@ -188,7 +190,7 @@ class InterfaceBlock extends Block
             $cleaned[] = self::_normalizeClassName($parentInterfaceName);
         }
 
-        return join(', ', $cleaned);
+        return implode(', ', $cleaned);
     }
 
     /**

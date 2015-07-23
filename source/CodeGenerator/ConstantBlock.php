@@ -2,8 +2,8 @@
 
 namespace CodeGenerator;
 
-class ConstantBlock extends Block {
-
+class ConstantBlock extends Block
+{
     /** @var string */
     private $_name;
 
@@ -14,7 +14,8 @@ class ConstantBlock extends Block {
      * @param string     $name
      * @param string|int $value
      */
-    public function __construct($name, $value) {
+    public function __construct($name, $value)
+    {
         $this->_name = (string) $name;
         $this->_value = $value;
     }
@@ -22,11 +23,13 @@ class ConstantBlock extends Block {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
-    public function dump() {
-        return 'const ' . $this->_name . ' = ' . var_export($this->_value, true) . ';';
+    public function dump()
+    {
+        return 'const '.$this->_name.' = '.var_export($this->_value, true).';';
     }
 }
