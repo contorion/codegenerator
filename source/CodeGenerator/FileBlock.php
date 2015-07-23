@@ -5,7 +5,7 @@ namespace CodeGenerator;
 class FileBlock extends Block
 {
     /** @var Block[] */
-    private $_blocks = array();
+    private $_blocks = [];
 
     /**
      * @param Block $block
@@ -17,7 +17,7 @@ class FileBlock extends Block
 
     public function dump()
     {
-        $lines = array();
+        $lines = [];
         $lines[] = '<?php';
         foreach ($this->_blocks as $block) {
             $lines[] = '';

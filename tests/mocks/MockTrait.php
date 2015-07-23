@@ -5,12 +5,16 @@ namespace CodeGeneratormocks;
 trait MockTrait
 {
     /** @var array */
-    public $foo = array(1, 2);
+    public $foo = [1, 2];
 
     /** @var int */
     protected $_bar = 1;
 
     private $_foo;
+
+    public static function staticMethod()
+    {
+    }
 
     /**
      * @return int
@@ -25,7 +29,7 @@ trait MockTrait
         echo 1;
     }
 
-    public function defaultValues($defaultValue = null, $defaultArray = array())
+    public function defaultValues($defaultValue = null, $defaultArray = [])
     {
         echo 2;
     }
@@ -43,9 +47,5 @@ trait MockTrait
         // comment
         // indentation
         // back
-    }
-
-    public static function staticMethod()
-    {
     }
 }

@@ -7,12 +7,16 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass
     const FOO = 1;
 
     /** @var array */
-    public $foo = array(1, 2);
+    public $foo = [1, 2];
 
     /** @var int */
     protected $_bar = 1;
 
     private $_foo;
+
+    public static function staticMethod()
+    {
+    }
 
     /**
      * @return int
@@ -26,7 +30,7 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass
     {
     }
 
-    public function defaultValues($defaultValue = null, $defaultArray = array())
+    public function defaultValues($defaultValue = null, $defaultArray = [])
     {
     }
 
@@ -43,9 +47,5 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass
         // comment
         // indentation
         // back
-    }
-
-    public static function staticMethod()
-    {
     }
 }

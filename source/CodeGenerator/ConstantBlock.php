@@ -11,12 +11,12 @@ class ConstantBlock extends Block
     private $_value;
 
     /**
-     * @param string     $name
+     * @param string $name
      * @param string|int $value
      */
     public function __construct($name, $value)
     {
-        $this->_name = (string) $name;
+        $this->_name = (string)$name;
         $this->_value = $value;
     }
 
@@ -30,6 +30,6 @@ class ConstantBlock extends Block
 
     public function dump()
     {
-        return 'const '.$this->_name.' = '.var_export($this->_value, true).';';
+        return 'const ' . $this->_name . ' = ' . var_export($this->_value, true) . ';';
     }
 }

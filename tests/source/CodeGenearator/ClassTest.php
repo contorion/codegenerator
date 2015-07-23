@@ -9,7 +9,7 @@ class ClassTest extends \PHPUnit_Framework_TestCase
 {
     public function testDump()
     {
-        $classes = array('CodeGeneratorMocks\\MockAbstractClass', 'CodeGeneratorMocks\\MockClass');
+        $classes = ['CodeGeneratorMocks\\MockAbstractClass', 'CodeGeneratorMocks\\MockClass'];
         foreach ($classes as $className) {
             $file = new FileBlock();
 
@@ -26,7 +26,7 @@ class ClassTest extends \PHPUnit_Framework_TestCase
     public function testGetName()
     {
         $className = 'Foo';
-        $class = new ClassBlock($className, 'Bar', array('Countable'));
+        $class = new ClassBlock($className, 'Bar', ['Countable']);
         $this->assertSame($className, $class->getName());
     }
 }

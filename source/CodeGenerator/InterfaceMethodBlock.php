@@ -14,22 +14,6 @@ class InterfaceMethodBlock extends FunctionBlock
     }
 
     /**
-     * @return string
-     */
-    protected function _dumpHeader()
-    {
-        return 'public '.parent::_dumpHeader();
-    }
-
-    /**
-     * @return string
-     */
-    protected function _dumpBody()
-    {
-        return ';';
-    }
-
-    /**
      * @param \ReflectionMethod $reflection
      *
      * @return InterfaceMethodBlock
@@ -40,5 +24,21 @@ class InterfaceMethodBlock extends FunctionBlock
         $method->extractFromReflection($reflection);
 
         return $method;
+    }
+
+    /**
+     * @return string
+     */
+    protected function _dumpHeader()
+    {
+        return 'public ' . parent::_dumpHeader();
+    }
+
+    /**
+     * @return string
+     */
+    protected function _dumpBody()
+    {
+        return ';';
     }
 }

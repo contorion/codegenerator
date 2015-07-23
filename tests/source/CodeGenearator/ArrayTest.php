@@ -8,10 +8,21 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 {
     public function testDumpShort()
     {
-        $value = array('foo', 'bar');
+        $value = ['foo', 'bar'];
         $array = new ArrayBlock($value);
         $this->assertNotRegExp("/\n/", $array->dump());
         $this->_assertSame($value, $array);
+    }
+
+    /**
+     * @param array $expected
+     * @param ArrayBlock $actual
+     */
+    private function _assertSame(array $expected, ArrayBlock $actual)
+    {
+        $code = 'return ' . $actual->dump() . ';';
+        $evaluatedActual = eval($code);
+        $this->assertSame($expected, $evaluatedActual);
     }
 
     public function testDumpLong()
@@ -21,16 +32,5 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp("/\n    /", $array->dump());
         $this->assertCount(count($value) + 2, explode("\n", $array->dump()));
         $this->_assertSame($value, $array);
-    }
-
-    /**
-     * @param array      $expected
-     * @param ArrayBlock $actual
-     */
-    private function _assertSame(array $expected, ArrayBlock $actual)
-    {
-        $code = 'return '.$actual->dump().';';
-        $evaluatedActual = eval($code);
-        $this->assertSame($expected, $evaluatedActual);
     }
 }

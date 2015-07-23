@@ -11,13 +11,13 @@ class InterfaceBlock extends Block
     private $_namespace;
 
     /** @var array */
-    private $_parentInterfaceNames = array();
+    private $_parentInterfaceNames = [];
 
     /** @var ConstantBlock[] */
-    private $_constants = array();
+    private $_constants = [];
 
     /** @var MethodBlock[] */
-    private $_methods = array();
+    private $_methods = [];
 
     /**
      * @param $name
@@ -25,7 +25,7 @@ class InterfaceBlock extends Block
      */
     public function __construct($name, array $parentInterfaceNames = null)
     {
-        $this->_name = (string) $name;
+        $this->_name = (string)$name;
 
         if (!is_null($parentInterfaceNames)) {
             $this->setParentInterfaceNames($parentInterfaceNames);
@@ -47,7 +47,7 @@ class InterfaceBlock extends Block
      */
     public function addParentInterfaceName($parentInterfaceName)
     {
-        $this->_parentInterfaceNames[] = (string) $parentInterfaceName;
+        $this->_parentInterfaceNames[] = (string)$parentInterfaceName;
     }
 
     /**
@@ -62,7 +62,7 @@ class InterfaceBlock extends Block
         $reflectionParentInterfaces = $reflection->getInterfaces();
 
         if (!empty($reflectionParentInterfaces)) {
-            $interfaces = array();
+            $interfaces = [];
             foreach ($reflectionParentInterfaces as $reflectionParentInterface) {
                 $interfaces[] = $reflectionParentInterface->getName();
             }
@@ -94,7 +94,7 @@ class InterfaceBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string) $namespace;
+        $this->_namespace = (string)$namespace;
     }
 
     /**
@@ -106,21 +106,13 @@ class InterfaceBlock extends Block
     }
 
     /**
-     * @param ConstantBlock $constant
-     */
-    public function addConstant(ConstantBlock $constant)
-    {
-        $this->_constants[$constant->getName()] = $constant;
-    }
-
-    /**
      * @param \ReflectionClass $reflection
      *
      * @return array
      */
     protected static function getAllConstantsOfParentInterfaces(\ReflectionClass $reflection)
     {
-        $parentConstants = array();
+        $parentConstants = [];
         $parentInterfaces = $reflection->getInterfaces();
         foreach ($parentInterfaces as $parentInterface) {
             $parentInterfaceConstants = $parentInterface->getConstants();
@@ -129,6 +121,14 @@ class InterfaceBlock extends Block
         }
 
         return $parentConstants;
+    }
+
+    /**
+     * @param ConstantBlock $constant
+     */
+    public function addConstant(ConstantBlock $constant)
+    {
+        $this->_constants[$constant->getName()] = $constant;
     }
 
     /**
@@ -144,7 +144,7 @@ class InterfaceBlock extends Block
      */
     public function dump()
     {
-        $lines = array();
+        $lines = [];
         $lines[] = $this->_dumpHeader();
         foreach ($this->_constants as $constant) {
             $lines[] = '';
@@ -164,15 +164,15 @@ class InterfaceBlock extends Block
      */
     private function _dumpHeader()
     {
-        $lines = array();
+        $lines = [];
         if ($this->_namespace) {
-            $lines[] = 'namespace '.$this->_namespace.';';
+            $lines[] = 'namespace ' . $this->_namespace . ';';
             $lines[] = '';
         }
         $classDeclaration = '';
-        $classDeclaration .= 'interface '.$this->_name;
+        $classDeclaration .= 'interface ' . $this->_name;
         if ($this->_parentInterfaceNames) {
-            $classDeclaration .= ' extends '.$this->_getParentInterfaces();
+            $classDeclaration .= ' extends ' . $this->_getParentInterfaces();
         }
         $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
@@ -185,7 +185,7 @@ class InterfaceBlock extends Block
      */
     private function _getParentInterfaces()
     {
-        $cleaned = array();
+        $cleaned = [];
         foreach ($this->_parentInterfaceNames as $parentInterfaceName) {
             $cleaned[] = self::_normalizeClassName($parentInterfaceName);
         }

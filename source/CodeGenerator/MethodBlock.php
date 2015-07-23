@@ -14,7 +14,7 @@ class MethodBlock extends FunctionBlock
     private $_abstract;
 
     /**
-     * @param string               $name
+     * @param string $name
      * @param callable|string|null $body
      */
     public function __construct($name, $body = null)
@@ -31,7 +31,7 @@ class MethodBlock extends FunctionBlock
      */
     public function setVisibility($visibility)
     {
-        $this->_visibility = (string) $visibility;
+        $this->_visibility = (string)$visibility;
     }
 
     /**
@@ -39,7 +39,7 @@ class MethodBlock extends FunctionBlock
      */
     public function setStatic($static)
     {
-        $this->_static = (bool) $static;
+        $this->_static = (bool)$static;
     }
 
     /**
@@ -47,7 +47,20 @@ class MethodBlock extends FunctionBlock
      */
     public function setAbstract($abstract)
     {
-        $this->_abstract = (bool) $abstract;
+        $this->_abstract = (bool)$abstract;
+    }
+
+    /**
+     * @param \ReflectionMethod $reflection
+     *
+     * @return MethodBlock
+     */
+    public static function buildFromReflection(\ReflectionMethod $reflection)
+    {
+        $method = new self($reflection->getName());
+        $method->extractFromReflection($reflection);
+
+        return $method;
     }
 
     /**
@@ -82,17 +95,17 @@ class MethodBlock extends FunctionBlock
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setAbstractFromReflection(\ReflectionMethod $reflection)
+    public function setStaticFromReflection(\ReflectionMethod $reflection)
     {
-        $this->setAbstract($reflection->isAbstract());
+        $this->setStatic($reflection->isStatic());
     }
 
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setStaticFromReflection(\ReflectionMethod $reflection)
+    public function setAbstractFromReflection(\ReflectionMethod $reflection)
     {
-        $this->setStatic($reflection->isStatic());
+        $this->setAbstract($reflection->isAbstract());
     }
 
     protected function _dumpHeader()
@@ -105,7 +118,7 @@ class MethodBlock extends FunctionBlock
         if ($this->_static) {
             $code .= ' static';
         }
-        $code .= ' '.parent::_dumpHeader();
+        $code .= ' ' . parent::_dumpHeader();
 
         return $code;
     }
@@ -117,18 +130,5 @@ class MethodBlock extends FunctionBlock
         }
 
         return parent::_dumpBody();
-    }
-
-    /**
-     * @param \ReflectionMethod $reflection
-     *
-     * @return MethodBlock
-     */
-    public static function buildFromReflection(\ReflectionMethod $reflection)
-    {
-        $method = new self($reflection->getName());
-        $method->extractFromReflection($reflection);
-
-        return $method;
     }
 }

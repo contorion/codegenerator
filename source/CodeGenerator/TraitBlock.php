@@ -24,15 +24,34 @@ class TraitBlock extends Block
      */
     public function __construct($name)
     {
-        $this->_name = (string) $name;
+        $this->_name = (string)$name;
     }
 
     /**
-     * @return string
+     * @param \ReflectionClass $reflection
+     *
+     * @return TraitBlock
      */
-    public function getName()
+    public static function buildFromReflection(\ReflectionClass $reflection)
     {
-        return $this->_name;
+        $class = new self($reflection->getShortName());
+        $class->setNamespace($reflection->getNamespaceName());
+
+        foreach ($reflection->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->getDeclaringClass() == $reflection) {
+                $method = MethodBlock::buildFromReflection($reflectionMethod);
+                $class->addMethod($method);
+            }
+        }
+
+        foreach ($reflection->getProperties() as $reflectionProperty) {
+            if ($reflectionProperty->getDeclaringClass() == $reflection) {
+                $property = PropertyBlock::buildFromReflection($reflectionProperty);
+                $class->addProperty($property);
+            }
+        }
+
+        return $class;
     }
 
     /**
@@ -40,15 +59,15 @@ class TraitBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string) $namespace;
+        $this->_namespace = (string)$namespace;
     }
 
     /**
-     * @param string $name
+     * @param MethodBlock $method
      */
-    public function addUse($name)
+    public function addMethod(MethodBlock $method)
     {
-        $this->_uses[] = $name;
+        $this->_methods[$method->getName()] = $method;
     }
 
     /**
@@ -60,11 +79,19 @@ class TraitBlock extends Block
     }
 
     /**
-     * @param MethodBlock $method
+     * @return string
      */
-    public function addMethod(MethodBlock $method)
+    public function getName()
     {
-        $this->_methods[$method->getName()] = $method;
+        return $this->_name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addUse($name)
+    {
+        $this->_uses[] = $name;
     }
 
     /**
@@ -98,10 +125,10 @@ class TraitBlock extends Block
     {
         $lines = [];
         if ($this->_namespace) {
-            $lines[] = 'namespace '.$this->_namespace.';';
+            $lines[] = 'namespace ' . $this->_namespace . ';';
             $lines[] = '';
         }
-        $classDeclaration = 'trait '.$this->_name;
+        $classDeclaration = 'trait ' . $this->_name;
         $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
 
@@ -114,32 +141,5 @@ class TraitBlock extends Block
     private function _dumpFooter()
     {
         return '}';
-    }
-
-    /**
-     * @param \ReflectionClass $reflection
-     *
-     * @return TraitBlock
-     */
-    public static function buildFromReflection(\ReflectionClass $reflection)
-    {
-        $class = new self($reflection->getShortName());
-        $class->setNamespace($reflection->getNamespaceName());
-
-        foreach ($reflection->getMethods() as $reflectionMethod) {
-            if ($reflectionMethod->getDeclaringClass() == $reflection) {
-                $method = MethodBlock::buildFromReflection($reflectionMethod);
-                $class->addMethod($method);
-            }
-        }
-
-        foreach ($reflection->getProperties() as $reflectionProperty) {
-            if ($reflectionProperty->getDeclaringClass() == $reflection) {
-                $property = PropertyBlock::buildFromReflection($reflectionProperty);
-                $class->addProperty($property);
-            }
-        }
-
-        return $class;
     }
 }

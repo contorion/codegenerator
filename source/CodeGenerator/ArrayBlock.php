@@ -12,7 +12,7 @@ class ArrayBlock extends Block
      */
     public function __construct(array $value = null)
     {
-        $this->_value = (array) $value;
+        $this->_value = (array)$value;
     }
 
     /**
@@ -20,12 +20,12 @@ class ArrayBlock extends Block
      */
     public function dump()
     {
-        $entries = array();
+        $entries = [];
         $isAssociative = $this->isAssociative();
         foreach ($this->_value as $key => $value) {
             $line = '';
             if ($isAssociative) {
-                $line .= $key.' => ';
+                $line .= $key . ' => ';
             }
             $value = new ValueBlock($value);
             $line .= $value->dump();
@@ -33,7 +33,7 @@ class ArrayBlock extends Block
         }
         $content = implode(', ', $entries);
         if (strlen($content) < 100) {
-            return 'array('.$content.')';
+            return 'array(' . $content . ')';
         } else {
             $content = implode(",\n", $entries);
 
@@ -47,6 +47,6 @@ class ArrayBlock extends Block
 
     public function isAssociative()
     {
-        return (bool) count(array_filter(array_keys($this->_value), 'is_string'));
+        return (bool)count(array_filter(array_keys($this->_value), 'is_string'));
     }
 }
