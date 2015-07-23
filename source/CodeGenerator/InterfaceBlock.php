@@ -147,13 +147,17 @@ class InterfaceBlock extends Block
         $lines = [];
         $lines[] = $this->_dumpHeader();
         foreach ($this->_constants as $constant) {
-            $lines[] = '';
             $lines[] = $this->_indent($constant->dump());
+            $lines[] = '';
         }
         foreach ($this->_methods as $method) {
-            $lines[] = '';
             $lines[] = $this->_indent($method->dump());
+            $lines[] = '';
         }
+        if (!empty($this->_constants) || !empty($this->_methods)) {
+            array_pop($lines);
+        }
+
         $lines[] = $this->_dumpFooter();
 
         return $this->_dumpLines($lines);
@@ -169,13 +173,13 @@ class InterfaceBlock extends Block
             $lines[] = 'namespace ' . $this->_namespace . ';';
             $lines[] = '';
         }
-        $classDeclaration = '';
-        $classDeclaration .= 'interface ' . $this->_name;
+
+        $classDeclaration = 'interface ' . $this->_name;
         if ($this->_parentInterfaceNames) {
             $classDeclaration .= ' extends ' . $this->_getParentInterfaces();
         }
-        $classDeclaration .= ' {';
         $lines[] = $classDeclaration;
+        $lines[] = '{';
 
         return $this->_dumpLines($lines);
     }

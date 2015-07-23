@@ -42,11 +42,12 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         $expected = <<<TEST
 <?php
 
-trait TestTrait {
-
+trait TestTrait
+{
     use \CodeGeneratorMocks\MockCompositeTrait;
 
-    public function testMethod() {
+    public function testMethod()
+    {
         echo 1;
     }
 }

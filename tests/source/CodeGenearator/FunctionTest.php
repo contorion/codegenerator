@@ -12,7 +12,7 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
             return $a * $b;
         };
         $function = new FunctionBlock($closure);
-        eval('$multiply = ' . $function->dump() . ';');
+        eval('$multiply = '.$function->dump().';');
         /* @var $multiply \Closure */
         $this->assertSame(12, $multiply(3, 4));
     }
@@ -20,7 +20,7 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
     public function testSetCodeString()
     {
         $function = new FunctionBlock('return true;');
-        eval('$true = ' . $function->dump() . ';');
+        eval('$true = '.$function->dump().';');
         /* @var $true \Closure */
         $this->assertTrue($true());
     }

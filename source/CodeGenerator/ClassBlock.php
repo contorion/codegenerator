@@ -174,21 +174,25 @@ class ClassBlock extends Block
         $lines = [];
         $lines[] = $this->_dumpHeader();
         foreach ($this->_uses as $use) {
-            $lines[] = '';
             $lines[] = $this->_indent("use ${use};");
+            $lines[] = '';
         }
         foreach ($this->_constants as $constant) {
-            $lines[] = '';
             $lines[] = $this->_indent($constant->dump());
+            $lines[] = '';
         }
         foreach ($this->_properties as $property) {
-            $lines[] = '';
             $lines[] = $this->_indent($property->dump());
+            $lines[] = '';
         }
         foreach ($this->_methods as $method) {
-            $lines[] = '';
             $lines[] = $this->_indent($method->dump());
+            $lines[] = '';
         }
+        if (!empty($this->_uses) || !empty($this->_constants) || !empty($this->_properties) || !empty($this->_methods)) {
+            array_pop($lines);
+        }
+
         $lines[] = $this->_dumpFooter();
 
         return $this->_dumpLines($lines);

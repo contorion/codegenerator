@@ -196,6 +196,6 @@ class FunctionBlock extends Block
             $code = $this->_indent($code);
         }
 
-        return $this->_dumpLine(' {', $code, '}');
+        return $this->_dumpLine('', '{', $code, '}');
     }
 }

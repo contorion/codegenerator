@@ -33,14 +33,14 @@ class ArrayBlock extends Block
         }
         $content = implode(', ', $entries);
         if (strlen($content) < 100) {
-            return 'array(' . $content . ')';
+            return '[' . $content . ']';
         } else {
             $content = implode(",\n", $entries);
 
             return $this->_dumpLine(
-                'array(',
+                '[',
                 $this->_indent($content),
-                ')'
+                ']'
             );
         }
     }

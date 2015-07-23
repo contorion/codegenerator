@@ -15,12 +15,12 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $expected
+     * @param array      $expected
      * @param ArrayBlock $actual
      */
     private function _assertSame(array $expected, ArrayBlock $actual)
     {
-        $code = 'return ' . $actual->dump() . ';';
+        $code = 'return '.$actual->dump().';';
         $evaluatedActual = eval($code);
         $this->assertSame($expected, $evaluatedActual);
     }
