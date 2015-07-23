@@ -10,6 +10,10 @@ class PropertyBlock extends Block
     private $_name;
     /** @var string */
     private $_visibility;
+
+    /** @var bool */
+    private $_static;
+
     /** @var mixed */
     private $_defaultValue;
 
@@ -20,6 +24,7 @@ class PropertyBlock extends Block
     {
         $this->_name = (string)$name;
         $this->setVisibility('public');
+        $this->setStatic(false);
     }
 
     /**
@@ -31,8 +36,15 @@ class PropertyBlock extends Block
     }
 
     /**
+     * @param boolean $static
+     */
+    public function setStatic($static)
+    {
+        $this->_static = (bool)$static;
+    }
+
+    /**
      * @param \ReflectionProperty $reflection
-     *
      * @return PropertyBlock
      */
     public static function buildFromReflection(\ReflectionProperty $reflection)
@@ -49,9 +61,17 @@ class PropertyBlock extends Block
      */
     public function extractFromReflection(\ReflectionProperty $reflection)
     {
+        $this->_setStaticFromReflection($reflection);
         $this->_setVisibilityFromReflection($reflection);
         $this->_setDefaultValueFromReflection($reflection);
         $this->_setDocBlockFromReflection($reflection);
+    }
+
+    protected function _setStaticFromReflection(\ReflectionProperty $reflection)
+    {
+        if ($reflection->isStatic()) {
+            $this->setStatic(true);
+        }
     }
 
     /**
@@ -139,7 +159,9 @@ class PropertyBlock extends Block
      */
     protected function _dumpValue()
     {
-        $content = $this->_visibility . ' $' . $this->_name;
+        $content = $this->_visibility;
+        $content .= ($this->_static) ? ' static' : '';
+        $content .= ' $' . $this->_name;
         if (null !== $this->_defaultValue) {
             $value = new ValueBlock($this->_defaultValue);
             $content .= ' = ' . $value->dump();
