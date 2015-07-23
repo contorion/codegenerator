@@ -12,7 +12,7 @@ class InterfaceTest extends \PHPUnit_Framework_TestCase
     {
         $file = new FileBlock();
 
-        $reflectionClass = new \ReflectionClass('CodeGeneratorMocks\\MockInterface');
+        $reflectionClass = new \ReflectionClass('CodeGeneratormocks\\MockInterface');
         $reflectedClass = InterfaceBlock::buildFromReflection($reflectionClass);
         $file->addBlock($reflectedClass);
 
@@ -25,7 +25,7 @@ class InterfaceTest extends \PHPUnit_Framework_TestCase
     {
         $file = new FileBlock();
 
-        $reflectionClass = new \ReflectionClass('CodeGeneratorMocks\\MockInterfaceTwo');
+        $reflectionClass = new \ReflectionClass('CodeGeneratormocks\\MockInterfaceTwo');
         $reflectedClass = InterfaceBlock::buildFromReflection($reflectionClass);
         $file->addBlock($reflectedClass);
 
@@ -39,7 +39,7 @@ class InterfaceTest extends \PHPUnit_Framework_TestCase
         $expected = <<<TEST
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
 interface MockInterfaceThree
 {
@@ -54,8 +54,8 @@ TEST;
 
         $interface = new InterfaceBlock('MockInterfaceThree');
         $file->addBlock($interface);
-        $interface->setNamespace('CodeGeneratorMocks');
-        $interface->extractConstantsFromOtherClassOrInterface('CodeGeneratorMocks\\MockInterfaceTwo');
+        $interface->setNamespace('CodeGeneratormocks');
+        $interface->extractConstantsFromOtherClassOrInterface('CodeGeneratormocks\\MockInterfaceTwo');
         $interface->addConstant(new ConstantBlock('BAR', 'test'));
 
         $actual = $file->dump();

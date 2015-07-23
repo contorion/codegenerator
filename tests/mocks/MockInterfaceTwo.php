@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
 interface MockInterfaceTwo
 {

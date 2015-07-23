@@ -9,7 +9,7 @@ class ClassTest extends \PHPUnit_Framework_TestCase
 {
     public function testDump()
     {
-        $classes = ['CodeGeneratorMocks\\MockAbstractClass', 'CodeGeneratorMocks\\MockClass'];
+        $classes = ['CodeGeneratormocks\\MockAbstractClass', 'CodeGeneratormocks\\MockClass'];
         foreach ($classes as $className) {
             $file = new FileBlock();
 

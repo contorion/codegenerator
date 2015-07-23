@@ -12,7 +12,7 @@ class TraitTest extends \PHPUnit_Framework_TestCase
     {
         $file = new FileBlock();
 
-        $reflectionClass = new \ReflectionClass('\\CodeGeneratorMocks\\MockTrait');
+        $reflectionClass = new \ReflectionClass('\\CodeGeneratormocks\\MockTrait');
 
         $reflectedClass = TraitBlock::buildFromReflection($reflectionClass);
         $file->addBlock($reflectedClass);
@@ -34,7 +34,7 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         $file = new FileBlock();
 
         $trait = new TraitBlock('TestTrait');
-        $trait->addUse('\\CodeGeneratorMocks\\MockCompositeTrait');
+        $trait->addUse('\\CodeGeneratormocks\\MockCompositeTrait');
         $trait->addMethod(new MethodBlock('testMethod', 'echo 1;'));
 
         $file->addBlock($trait);
@@ -44,7 +44,7 @@ class TraitTest extends \PHPUnit_Framework_TestCase
 
 trait TestTrait
 {
-    use \CodeGeneratorMocks\MockCompositeTrait;
+    use \CodeGeneratormocks\MockCompositeTrait;
 
     public function testMethod()
     {
