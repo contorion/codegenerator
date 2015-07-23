@@ -6,7 +6,7 @@ use CodeGenerator\ConstantBlock;
 use CodeGenerator\FileBlock;
 use CodeGenerator\InterfaceBlock;
 
-class CG_InterfaceTest extends \PHPUnit_Framework_TestCase
+class InterfaceTest extends \PHPUnit_Framework_TestCase
 {
     public function testDump()
     {

@@ -1,8 +1,9 @@
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
-trait MockCompositeTrait {
+trait MockCompositeTrait
+{
     use MockTrait;
     use MockTraitTwo;
 }

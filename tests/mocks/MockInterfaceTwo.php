@@ -1,8 +1,8 @@
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
-interface MockInterfaceTwo {
-
+interface MockInterfaceTwo
+{
     const FOO = 2;
 }

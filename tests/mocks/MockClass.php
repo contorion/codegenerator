@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
-class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
-
+class MockClass extends \CodeGeneratorMocks\MockAbstractClass
+{
     const FOO = 1;
 
     /** @var array */
@@ -17,28 +17,35 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     /**
      * @return int
      */
-    public function count() {
+    public function count()
+    {
         return count($this->foo);
     }
 
-    public function withTypeHinting(\Countable $countable, array $array, callable $callable) {
+    public function withTypeHinting(\Countable $countable, array $array, callable $callable)
+    {
     }
 
-    public function defaultValues($defaultValue = null, $defaultArray = array()) {
+    public function defaultValues($defaultValue = null, $defaultArray = array())
+    {
     }
 
-    public function withReferenceParam(&$param) {
+    public function withReferenceParam(&$param)
+    {
     }
 
-    protected function abstractMethod() {
+    protected function abstractMethod()
+    {
     }
 
-    private function _foo() {
+    private function _foo()
+    {
         // comment
         // indentation
         // back
     }
 
-    public static function staticMethod() {
+    public static function staticMethod()
+    {
     }
 }

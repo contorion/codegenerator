@@ -6,7 +6,7 @@ use CodeGenerator\FileBlock;
 use CodeGenerator\MethodBlock;
 use CodeGenerator\TraitBlock;
 
-class CG_TraitTest extends \PHPUnit_Framework_TestCase
+class TraitTest extends \PHPUnit_Framework_TestCase
 {
     public function testDump()
     {
@@ -24,7 +24,7 @@ class CG_TraitTest extends \PHPUnit_Framework_TestCase
 
     public function testDumpComposite()
     {
-        /**
+        /*
          * Traits that contain USE are treated like the contain the methods and properties themselves
          * might not be the best solution to handle them like this
          */
@@ -96,7 +96,6 @@ trait MockCompositeTrait {
 TEST;
         $this->assertSame($expected, $actual);
     }
-
 
     public function testGetName()
     {

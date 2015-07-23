@@ -1,21 +1,24 @@
 <?php
 
-namespace CodeGeneratorHelpers;
+namespace CodeGeneratorhelpers;
 
 use CodeGenerator\Block;
 
-class TestHelper {
+class TestHelper
+{
+    /**
+     * @param Block      $object
+     * @param string     $methodName
+     * @param array|null $arguments
+     *
+     * @return mixed
+     */
+    public static function invokeMethod(Block $object, $methodName, array $arguments = null)
+    {
+        $arguments = (array) $arguments;
+        $reflection = new \ReflectionMethod(get_class($object), $methodName);
+        $reflection->setAccessible(true);
 
-	/**
-	 * @param Block   $object
-	 * @param string     $methodName
-	 * @param array|null $arguments
-	 * @return mixed
-	 */
-	public static function invokeMethod(Block $object, $methodName, array $arguments = null) {
-		$arguments = (array) $arguments;
-		$reflection = new \ReflectionMethod(get_class($object), $methodName);
-		$reflection->setAccessible(true);
-		return $reflection->invokeArgs($object, $arguments);
-	}
+        return $reflection->invokeArgs($object, $arguments);
+    }
 }
