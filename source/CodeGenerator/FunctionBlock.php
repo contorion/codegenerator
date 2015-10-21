@@ -154,7 +154,7 @@ class FunctionBlock extends Block
         $this->_name = (string)$name;
     }
 
-    public function dump()
+    protected function dumpContent()
     {
         return $this->_dumpLine(
             $this->_dumpDocBlock(),

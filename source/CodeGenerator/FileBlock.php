@@ -15,7 +15,7 @@ class FileBlock extends Block
         $this->_blocks[] = $block;
     }
 
-    public function dump()
+    protected function dumpContent()
     {
         $lines = [];
         $lines[] = '<?php';

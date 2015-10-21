@@ -18,7 +18,7 @@ class ArrayBlock extends Block
     /**
      * @return string
      */
-    public function dump()
+    protected function dumpContent()
     {
         $entries = [];
         $isAssociative = $this->isAssociative();

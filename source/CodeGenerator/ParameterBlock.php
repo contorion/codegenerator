@@ -88,7 +88,7 @@ class ParameterBlock extends Block
     /**
      * @return string
      */
-    public function dump()
+    protected function dumpContent()
     {
         $content = '';
         if ($this->_type) {

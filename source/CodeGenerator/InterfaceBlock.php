@@ -142,7 +142,7 @@ class InterfaceBlock extends Block
     /**
      * @return string
      */
-    public function dump()
+    protected function dumpContent()
     {
         $lines = [];
         $lines[] = $this->_dumpHeader();

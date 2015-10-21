@@ -18,7 +18,7 @@ class ValueBlock extends Block
     /**
      * @return string
      */
-    public function dump()
+    protected function dumpContent()
     {
         if (is_array($this->_value)) {
             $array = new ArrayBlock($this->_value);

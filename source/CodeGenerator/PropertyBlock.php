@@ -138,7 +138,7 @@ class PropertyBlock extends Block
         $this->_docBlock = $docBlock;
     }
 
-    public function dump()
+    protected function dumpContent()
     {
         return $this->_dumpLine(
             $this->_dumpDocBlock(),

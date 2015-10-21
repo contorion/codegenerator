@@ -4,6 +4,9 @@ namespace CodeGenerator;
 
 abstract class Block
 {
+    /** @var  DocBlock */
+    protected $docBlock;
+
     /** @var string */
     protected static $_indentation = '    ';
 
@@ -29,6 +32,9 @@ abstract class Block
         return $className;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->dump();
@@ -37,7 +43,18 @@ abstract class Block
     /**
      * @return string
      */
-    abstract public function dump();
+    public function dump()
+    {
+        if ($this->docBlock) {
+            return $this->docBlock . '' . $this->dumpContent();
+        }
+
+        return $this->dumpContent();
+    }
+    /**
+     * @return string
+     */
+    abstract protected function dumpContent();
 
     /**
      * @param string $content

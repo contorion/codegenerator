@@ -28,7 +28,7 @@ class ConstantBlock extends Block
         return $this->_name;
     }
 
-    public function dump()
+    protected function dumpContent()
     {
         return 'const ' . $this->_name . ' = ' . var_export($this->_value, true) . ';';
     }
