@@ -119,6 +119,14 @@ class ClassBlock extends Block
     }
 
     /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    /**
      * @param bool $abstract
      */
     public function setAbstract($abstract)
