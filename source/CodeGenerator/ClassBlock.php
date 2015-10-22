@@ -76,6 +76,11 @@ class ClassBlock extends Block
         $this->interfaces[] = $interface;
     }
 
+    /**
+     * @param \ReflectionClass $reflection
+     *
+     * @return ClassBlock
+     */
     public static function buildFromReflection(\ReflectionClass $reflection)
     {
         $class = new self($reflection->getShortName());
@@ -188,6 +193,14 @@ class ClassBlock extends Block
     /**
      * @return string
      */
+    public function dump()
+    {
+        return $this->dumpContent();
+    }
+
+    /**
+     * @return string
+     */
     protected function dumpContent()
     {
         $lines = [];
@@ -226,6 +239,7 @@ class ClassBlock extends Block
         if ($this->namespace) {
             $lines[] = 'namespace ' . $this->namespace . ';';
             $lines[] = '';
+            $lines[] = '';
         }
         if (count($this->importUses)) {
             foreach ($this->importUses as $import) {
@@ -233,6 +247,17 @@ class ClassBlock extends Block
             }
             $lines[] = '';
         }
+
+        $content = $this->dumpLines($lines);
+
+        if ($this->docBlock) {
+            $docBlockText = $this->docBlock->dump();
+            if ($docBlockText) {
+                $docBlockText .= PHP_EOL;
+            }
+            $content .= $docBlockText;
+        }
+
         $classDeclaration = '';
         if ($this->abstract) {
             $classDeclaration .= self::KEYWORD_ABSTRACT . ' ';
@@ -244,10 +269,12 @@ class ClassBlock extends Block
         if ($this->interfaces) {
             $classDeclaration .= ' implements ' . implode(', ', $this->getInterfaces());
         }
+        $lines = [];
         $lines[] = $classDeclaration;
         $lines[] = '{';
+        $content .= $this->dumpLines($lines);
 
-        return $this->dumpLines($lines);
+        return $content;
     }
 
     /**
