@@ -94,6 +94,14 @@ class ParameterBlock extends Block
     }
 
     /**
+     * @return boolean
+     */
+    public function isOptional()
+    {
+        return $this->optional;
+    }
+
+    /**
      * @return string
      */
     protected function dumpContent()
