@@ -19,6 +19,12 @@ class InterfaceBlock extends Block
     /** @var MethodBlock[] */
     private $methods = [];
 
+    /** @var string[] */
+    private $uses = [];
+
+    /** @var string[] */
+    private $importUses = [];
+
     /**
      * @param $name
      * @param array|null $parentInterfaceNames
@@ -30,6 +36,22 @@ class InterfaceBlock extends Block
         if (!is_null($parentInterfaceNames)) {
             $this->setParentInterfaceNames($parentInterfaceNames);
         }
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addUse($name)
+    {
+        $this->uses[] = $name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addImportUse($name)
+    {
+        $this->importUses[] = $name;
     }
 
     /**
@@ -146,6 +168,10 @@ class InterfaceBlock extends Block
     {
         $lines = [];
         $lines[] = $this->dumpHeader();
+        foreach ($this->uses as $use) {
+            $lines[] = $this->indent("use ${use};");
+            $lines[] = '';
+        }
         foreach ($this->constants as $constant) {
             $lines[] = $this->indent($constant->dump());
             $lines[] = '';
@@ -173,7 +199,12 @@ class InterfaceBlock extends Block
             $lines[] = 'namespace ' . $this->namespace . ';';
             $lines[] = '';
         }
-
+        if (count($this->importUses)) {
+            foreach ($this->importUses as $import) {
+                $lines[] = 'use ' . $import . ';';
+            }
+            $lines[] = '';
+        }
         $classDeclaration = 'interface ' . $this->name;
         if ($this->parentInterfaceNames) {
             $classDeclaration .= ' extends ' . $this->getParentInterfaces();

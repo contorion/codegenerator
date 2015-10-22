@@ -178,6 +178,14 @@ class ClassBlock extends Block
     }
 
     /**
+     * @param string $name
+     */
+    public function addImportUse($name)
+    {
+        $this->importUses[] = $name;
+    }
+
+    /**
      * @return string
      */
     protected function dumpContent()
