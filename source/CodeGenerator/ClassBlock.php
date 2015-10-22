@@ -251,11 +251,7 @@ class ClassBlock extends Block
         }
 
         if ($this->docBlock) {
-            $docBlockText = $this->docBlock->dump();
-            if ($docBlockText) {
-                $docBlockText .= PHP_EOL;
-            }
-            $lines[] = $docBlockText;
+            $lines[] = $this->docBlock->dump();
         }
 
         $classDeclaration = '';
