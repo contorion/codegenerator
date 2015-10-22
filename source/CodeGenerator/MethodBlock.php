@@ -20,7 +20,7 @@ class MethodBlock extends FunctionBlock
     public function __construct($name, $body = null)
     {
         $this->setName($name);
-        $this->setVisibility('public');
+        $this->setVisibility(self::VISIBILITY_PUBLIC);
         $this->setStatic(false);
         $this->setAbstract(false);
         parent::__construct($body);
@@ -82,13 +82,13 @@ class MethodBlock extends FunctionBlock
     public function setVisibilityFromReflection(\ReflectionMethod $reflection)
     {
         if ($reflection->isPublic()) {
-            $this->setVisibility('public');
+            $this->setVisibility(self::VISIBILITY_PUBLIC);
         }
         if ($reflection->isProtected()) {
-            $this->setVisibility('protected');
+            $this->setVisibility(self::VISIBILITY_PROTECTED);
         }
         if ($reflection->isPrivate()) {
-            $this->setVisibility('private');
+            $this->setVisibility(self::VISIBILITY_PRIVATE);
         }
     }
 
@@ -112,11 +112,11 @@ class MethodBlock extends FunctionBlock
     {
         $code = '';
         if ($this->abstract) {
-            $code .= 'abstract ';
+            $code .= self::KEYWORD_ABSTRACT . ' ';
         }
         $code .= $this->visibility;
         if ($this->static) {
-            $code .= ' static';
+            $code .= ' ' . self::KEYWORD_STATIC;
         }
         $code .= ' ' . parent::dumpHeader();
 

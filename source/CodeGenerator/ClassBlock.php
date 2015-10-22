@@ -210,7 +210,7 @@ class ClassBlock extends Block
         }
         $classDeclaration = '';
         if ($this->abstract) {
-            $classDeclaration .= 'abstract ';
+            $classDeclaration .= self::KEYWORD_ABSTRACT . ' ';
         }
         $classDeclaration .= 'class ' . $this->name;
         if ($this->parentClassName) {

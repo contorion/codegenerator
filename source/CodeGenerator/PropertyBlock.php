@@ -21,7 +21,7 @@ class PropertyBlock extends Block
     public function __construct($name)
     {
         $this->name = (string)$name;
-        $this->setVisibility('public');
+        $this->setVisibility(self::VISIBILITY_PUBLIC);
         $this->setStatic(false);
     }
 
@@ -78,13 +78,13 @@ class PropertyBlock extends Block
     protected function setVisibilityFromReflection(\ReflectionProperty $reflection)
     {
         if ($reflection->isPublic()) {
-            $this->setVisibility('public');
+            $this->setVisibility(self::VISIBILITY_PUBLIC);
         }
         if ($reflection->isProtected()) {
-            $this->setVisibility('protected');
+            $this->setVisibility(self::VISIBILITY_PROTECTED);
         }
         if ($reflection->isPrivate()) {
-            $this->setVisibility('private');
+            $this->setVisibility(self::VISIBILITY_PRIVATE);
         }
     }
 
@@ -129,7 +129,7 @@ class PropertyBlock extends Block
     protected function _dumpValue()
     {
         $content = $this->visibility;
-        $content .= ($this->static) ? ' static' : '';
+        $content .= ($this->static) ? ' ' . self::KEYWORD_STATIC : '';
         $content .= ' $' . $this->name;
         if (null !== $this->defaultValue) {
             $value = new ValueBlock($this->defaultValue);

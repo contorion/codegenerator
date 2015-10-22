@@ -2,7 +2,7 @@
 
 namespace CodeGenerator;
 
-abstract class Block
+abstract class Block implements GeneratorConstants
 {
     /** @var string */
     protected static $indentation = '    ';

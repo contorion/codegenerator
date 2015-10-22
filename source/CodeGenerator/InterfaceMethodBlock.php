@@ -31,7 +31,7 @@ class InterfaceMethodBlock extends FunctionBlock
      */
     protected function dumpHeader()
     {
-        return 'public ' . parent::dumpHeader();
+        return self::VISIBILITY_PUBLIC . ' ' . parent::dumpHeader();
     }
 
     /**
