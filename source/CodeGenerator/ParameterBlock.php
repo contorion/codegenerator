@@ -92,7 +92,7 @@ class ParameterBlock extends Block
     {
         $content = '';
         if ($this->type) {
-            $content .= $this->_getType() . ' ';
+            $content .= $this->getType() . ' ';
         }
         if ($this->passedByReference) {
             $content .= '&';
@@ -108,7 +108,7 @@ class ParameterBlock extends Block
     /**
      * @return null|string
      */
-    protected function _getType()
+    public function getType()
     {
         $type = $this->type;
         if (!in_array($type, [null, 'array', 'callable'], true)) {
