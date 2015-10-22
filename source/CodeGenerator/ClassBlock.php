@@ -250,17 +250,13 @@ class ClassBlock extends Block
             $lines[] = '';
         }
 
-        $content = $this->dumpLines($lines);
-
         if ($this->docBlock) {
             $docBlockText = $this->docBlock->dump();
             if ($docBlockText) {
                 $docBlockText .= PHP_EOL;
             }
-        } else {
-            $docBlockText = "\n";
+            $lines[] = $docBlockText;
         }
-        $content .= $docBlockText;
 
         $classDeclaration = '';
         if ($this->abstract) {
@@ -273,12 +269,10 @@ class ClassBlock extends Block
         if ($this->interfaces) {
             $classDeclaration .= ' implements ' . implode(', ', $this->getInterfaces());
         }
-        $lines = [];
         $lines[] = $classDeclaration;
         $lines[] = '{';
-        $content .= $this->dumpLines($lines);
 
-        return $content;
+        return $this->dumpLines($lines);
     }
 
     /**
