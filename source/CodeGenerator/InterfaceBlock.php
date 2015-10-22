@@ -5,19 +5,19 @@ namespace CodeGenerator;
 class InterfaceBlock extends Block
 {
     /** @var string */
-    private $_name;
+    private $name;
 
     /** @var string */
-    private $_namespace;
+    private $namespace;
 
     /** @var array */
-    private $_parentInterfaceNames = [];
+    private $parentInterfaceNames = [];
 
     /** @var ConstantBlock[] */
-    private $_constants = [];
+    private $constants = [];
 
     /** @var MethodBlock[] */
-    private $_methods = [];
+    private $methods = [];
 
     /**
      * @param $name
@@ -25,7 +25,7 @@ class InterfaceBlock extends Block
      */
     public function __construct($name, array $parentInterfaceNames = null)
     {
-        $this->_name = (string)$name;
+        $this->name = (string)$name;
 
         if (!is_null($parentInterfaceNames)) {
             $this->setParentInterfaceNames($parentInterfaceNames);
@@ -47,7 +47,7 @@ class InterfaceBlock extends Block
      */
     public function addParentInterfaceName($parentInterfaceName)
     {
-        $this->_parentInterfaceNames[] = (string)$parentInterfaceName;
+        $this->parentInterfaceNames[] = (string)$parentInterfaceName;
     }
 
     /**
@@ -94,7 +94,7 @@ class InterfaceBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string)$namespace;
+        $this->namespace = (string)$namespace;
     }
 
     /**
@@ -102,7 +102,7 @@ class InterfaceBlock extends Block
      */
     public function addMethod(InterfaceMethodBlock $method)
     {
-        $this->_methods[$method->getName()] = $method;
+        $this->methods[$method->getName()] = $method;
     }
 
     /**
@@ -128,7 +128,7 @@ class InterfaceBlock extends Block
      */
     public function addConstant(ConstantBlock $constant)
     {
-        $this->_constants[$constant->getName()] = $constant;
+        $this->constants[$constant->getName()] = $constant;
     }
 
     /**
@@ -136,7 +136,7 @@ class InterfaceBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -145,53 +145,53 @@ class InterfaceBlock extends Block
     protected function dumpContent()
     {
         $lines = [];
-        $lines[] = $this->_dumpHeader();
-        foreach ($this->_constants as $constant) {
-            $lines[] = $this->_indent($constant->dump());
+        $lines[] = $this->dumpHeader();
+        foreach ($this->constants as $constant) {
+            $lines[] = $this->indent($constant->dump());
             $lines[] = '';
         }
-        foreach ($this->_methods as $method) {
-            $lines[] = $this->_indent($method->dump());
+        foreach ($this->methods as $method) {
+            $lines[] = $this->indent($method->dump());
             $lines[] = '';
         }
-        if (!empty($this->_constants) || !empty($this->_methods)) {
+        if (!empty($this->constants) || !empty($this->methods)) {
             array_pop($lines);
         }
 
-        $lines[] = $this->_dumpFooter();
+        $lines[] = $this->dumpFooter();
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
     }
 
     /**
      * @return string
      */
-    private function _dumpHeader()
+    private function dumpHeader()
     {
         $lines = [];
-        if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
+        if ($this->namespace) {
+            $lines[] = 'namespace ' . $this->namespace . ';';
             $lines[] = '';
         }
 
-        $classDeclaration = 'interface ' . $this->_name;
-        if ($this->_parentInterfaceNames) {
-            $classDeclaration .= ' extends ' . $this->_getParentInterfaces();
+        $classDeclaration = 'interface ' . $this->name;
+        if ($this->parentInterfaceNames) {
+            $classDeclaration .= ' extends ' . $this->getParentInterfaces();
         }
         $lines[] = $classDeclaration;
         $lines[] = '{';
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
     }
 
     /**
      * @return string
      */
-    private function _getParentInterfaces()
+    private function getParentInterfaces()
     {
         $cleaned = [];
-        foreach ($this->_parentInterfaceNames as $parentInterfaceName) {
-            $cleaned[] = self::_normalizeClassName($parentInterfaceName);
+        foreach ($this->parentInterfaceNames as $parentInterfaceName) {
+            $cleaned[] = self::normalizeClassName($parentInterfaceName);
         }
 
         return implode(', ', $cleaned);
@@ -200,7 +200,7 @@ class InterfaceBlock extends Block
     /**
      * @return string
      */
-    private function _dumpFooter()
+    private function dumpFooter()
     {
         return '}';
     }

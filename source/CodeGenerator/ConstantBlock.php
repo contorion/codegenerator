@@ -5,10 +5,10 @@ namespace CodeGenerator;
 class ConstantBlock extends Block
 {
     /** @var string */
-    private $_name;
+    private $name;
 
     /** @var string|int */
-    private $_value;
+    private $value;
 
     /**
      * @param string $name
@@ -16,8 +16,8 @@ class ConstantBlock extends Block
      */
     public function __construct($name, $value)
     {
-        $this->_name = (string)$name;
-        $this->_value = $value;
+        $this->name = (string)$name;
+        $this->value = $value;
     }
 
     /**
@@ -25,11 +25,11 @@ class ConstantBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     protected function dumpContent()
     {
-        return 'const ' . $this->_name . ' = ' . var_export($this->_value, true) . ';';
+        return 'const ' . $this->name . ' = ' . var_export($this->value, true) . ';';
     }
 }

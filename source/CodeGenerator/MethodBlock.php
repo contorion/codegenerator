@@ -5,13 +5,13 @@ namespace CodeGenerator;
 class MethodBlock extends FunctionBlock
 {
     /** @var string */
-    private $_visibility;
+    private $visibility;
 
     /** @var bool */
-    private $_static;
+    private $static;
 
     /** @var bool */
-    private $_abstract;
+    private $abstract;
 
     /**
      * @param string $name
@@ -31,7 +31,7 @@ class MethodBlock extends FunctionBlock
      */
     public function setVisibility($visibility)
     {
-        $this->_visibility = (string)$visibility;
+        $this->visibility = (string)$visibility;
     }
 
     /**
@@ -39,7 +39,7 @@ class MethodBlock extends FunctionBlock
      */
     public function setStatic($static)
     {
-        $this->_static = (bool)$static;
+        $this->static = (bool)$static;
     }
 
     /**
@@ -47,7 +47,7 @@ class MethodBlock extends FunctionBlock
      */
     public function setAbstract($abstract)
     {
-        $this->_abstract = (bool)$abstract;
+        $this->abstract = (bool)$abstract;
     }
 
     /**
@@ -108,27 +108,27 @@ class MethodBlock extends FunctionBlock
         $this->setAbstract($reflection->isAbstract());
     }
 
-    protected function _dumpHeader()
+    protected function dumpHeader()
     {
         $code = '';
-        if ($this->_abstract) {
+        if ($this->abstract) {
             $code .= 'abstract ';
         }
-        $code .= $this->_visibility;
-        if ($this->_static) {
+        $code .= $this->visibility;
+        if ($this->static) {
             $code .= ' static';
         }
-        $code .= ' ' . parent::_dumpHeader();
+        $code .= ' ' . parent::dumpHeader();
 
         return $code;
     }
 
-    protected function _dumpBody()
+    protected function dumpBody()
     {
-        if ($this->_abstract) {
+        if ($this->abstract) {
             return ';';
         }
 
-        return parent::_dumpBody();
+        return parent::dumpBody();
     }
 }

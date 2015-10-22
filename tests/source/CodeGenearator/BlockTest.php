@@ -18,7 +18,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
             '            foo' => '        foo',
         ];
         foreach ($cases as $input => $expected) {
-            $output = TestHelper::invokeMethod($block, '_outdent', [$input]);
+            $output = TestHelper::invokeMethod($block, 'outdent', [$input]);
             $this->assertSame($expected, $output);
         }
     }
@@ -32,7 +32,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
             '            foo' => 'foo',
         ];
         foreach ($cases as $input => $expected) {
-            $output = TestHelper::invokeMethod($block, '_outdent', [$input, true]);
+            $output = TestHelper::invokeMethod($block, 'outdent', [$input, true]);
             $this->assertSame($expected, $output);
         }
     }
@@ -45,7 +45,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
             "    foo\n    bar" => "        foo\n        bar",
         ];
         foreach ($cases as $input => $expected) {
-            $output = TestHelper::invokeMethod($block, '_indent', [$input, true]);
+            $output = TestHelper::invokeMethod($block, 'indent', [$input, true]);
             $this->assertSame($expected, $output);
         }
     }
@@ -55,9 +55,9 @@ class BlockTest extends \PHPUnit_Framework_TestCase
         Block::setIndentation('  ');
         $block = new FileBlock();
 
-        $output = TestHelper::invokeMethod($block, '_indent', ['foo', true]);
+        $output = TestHelper::invokeMethod($block, 'indent', ['foo', true]);
         $this->assertSame('  foo', $output);
-        $output = TestHelper::invokeMethod($block, '_outdent', ["  foo\n    bar", true]);
+        $output = TestHelper::invokeMethod($block, 'outdent', ["  foo\n    bar", true]);
         $this->assertSame("foo\n  bar", $output);
 
         Block::setIndentation('    ');

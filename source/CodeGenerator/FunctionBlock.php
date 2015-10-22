@@ -5,13 +5,11 @@ namespace CodeGenerator;
 class FunctionBlock extends Block
 {
     /** @var string|null */
-    protected $_name;
+    protected $name;
     /** @var string */
-    protected $_code;
-    /** @var string|null */
-    protected $_docBlock;
+    protected $code;
     /** @var ParameterBlock[] */
-    private $_parameters = [];
+    private $parameters = [];
 
     /**
      * @param callable|string|null $body
@@ -48,11 +46,11 @@ class FunctionBlock extends Block
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setBodyFromReflection(\ReflectionFunctionAbstract $reflection)
+    protected function setBodyFromReflection(\ReflectionFunctionAbstract $reflection)
     {
         /** @var $reflection \ReflectionMethod */
         if (is_a($reflection, '\\ReflectionMethod') && $reflection->isAbstract()) {
-            $this->_code = null;
+            $this->code = null;
 
             return;
         }
@@ -86,15 +84,15 @@ class FunctionBlock extends Block
     public function setCode($code)
     {
         if (null !== $code) {
-            $code = $this->_outdent((string)$code, true);
+            $code = $this->outdent((string)$code, true);
         }
-        $this->_code = $code;
+        $this->code = $code;
     }
 
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setParametersFromReflection(\ReflectionFunctionAbstract $reflection)
+    protected function setParametersFromReflection(\ReflectionFunctionAbstract $reflection)
     {
         foreach ($reflection->getParameters() as $reflectionParameter) {
             $parameter = ParameterBlock::buildFromReflection($reflectionParameter);
@@ -109,33 +107,10 @@ class FunctionBlock extends Block
      */
     public function addParameter(ParameterBlock $parameter)
     {
-        if (array_key_exists($parameter->getName(), $this->_parameters)) {
+        if (array_key_exists($parameter->getName(), $this->parameters)) {
             throw new \Exception('Parameter `' . $parameter->getName() . '` is already set.');
         }
-        $this->_parameters[$parameter->getName()] = $parameter;
-    }
-
-    /**
-     * @param \ReflectionFunctionAbstract $reflection
-     */
-    public function setDocBlockFromReflection(\ReflectionFunctionAbstract $reflection)
-    {
-        $docBlock = $reflection->getDocComment();
-        if ($docBlock) {
-            $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
-            $this->setDocBlock($docBlock);
-        }
-    }
-
-    /**
-     * @param string|null $docBlock
-     */
-    public function setDocBlock($docBlock)
-    {
-        if (null !== $docBlock) {
-            $docBlock = (string)$docBlock;
-        }
-        $this->_docBlock = $docBlock;
+        $this->parameters[$parameter->getName()] = $parameter;
     }
 
     /**
@@ -143,7 +118,7 @@ class FunctionBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -151,36 +126,30 @@ class FunctionBlock extends Block
      */
     public function setName($name)
     {
-        $this->_name = (string)$name;
+        $this->name = (string)$name;
     }
 
+    /**
+     * @return string
+     */
     protected function dumpContent()
     {
-        return $this->_dumpLine(
-            $this->_dumpDocBlock(),
-            $this->_dumpHeader() . $this->_dumpBody()
+        return $this->dumpLine(
+            $this->dumpHeader() . $this->dumpBody()
         );
     }
 
     /**
      * @return string
      */
-    protected function _dumpDocBlock()
-    {
-        return $this->_docBlock;
-    }
-
-    /**
-     * @return string
-     */
-    protected function _dumpHeader()
+    protected function dumpHeader()
     {
         $content = 'function';
-        if ($this->_name) {
-            $content .= ' ' . $this->_name;
+        if ($this->name) {
+            $content .= ' ' . $this->name;
         }
         $content .= '(';
-        $content .= implode(', ', $this->_parameters);
+        $content .= implode(', ', $this->parameters);
         $content .= ')';
 
         return $content;
@@ -189,13 +158,13 @@ class FunctionBlock extends Block
     /**
      * @return string
      */
-    protected function _dumpBody()
+    protected function dumpBody()
     {
-        $code = $this->_code;
+        $code = $this->code;
         if ($code) {
-            $code = $this->_indent($code);
+            $code = $this->indent($code);
         }
 
-        return $this->_dumpLine('', '{', $code, '}');
+        return $this->dumpLine('', '{', $code, '}');
     }
 }

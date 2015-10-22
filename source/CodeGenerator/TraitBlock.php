@@ -5,26 +5,26 @@ namespace CodeGenerator;
 class TraitBlock extends Block
 {
     /** @var string */
-    private $_name;
+    private $name;
 
     /** @var string */
-    private $_namespace;
+    private $namespace;
 
     /** @var string[] */
-    private $_uses = [];
+    private $uses = [];
 
     /** @var PropertyBlock[] */
-    private $_properties = [];
+    private $properties = [];
 
     /** @var MethodBlock[] */
-    private $_methods = [];
+    private $methods = [];
 
     /**
      * @param $name
      */
     public function __construct($name)
     {
-        $this->_name = (string)$name;
+        $this->name = (string)$name;
     }
 
     /**
@@ -59,7 +59,7 @@ class TraitBlock extends Block
      */
     public function setNamespace($namespace)
     {
-        $this->_namespace = (string)$namespace;
+        $this->namespace = (string)$namespace;
     }
 
     /**
@@ -67,7 +67,7 @@ class TraitBlock extends Block
      */
     public function addMethod(MethodBlock $method)
     {
-        $this->_methods[$method->getName()] = $method;
+        $this->methods[$method->getName()] = $method;
     }
 
     /**
@@ -75,7 +75,7 @@ class TraitBlock extends Block
      */
     public function addProperty(PropertyBlock $property)
     {
-        $this->_properties[$property->getName()] = $property;
+        $this->properties[$property->getName()] = $property;
     }
 
     /**
@@ -83,7 +83,7 @@ class TraitBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -91,7 +91,7 @@ class TraitBlock extends Block
      */
     public function addUse($name)
     {
-        $this->_uses[] = $name;
+        $this->uses[] = $name;
     }
 
     /**
@@ -100,49 +100,49 @@ class TraitBlock extends Block
     protected function dumpContent()
     {
         $lines = [];
-        $lines[] = $this->_dumpHeader();
-        foreach ($this->_uses as $use) {
-            $lines[] = $this->_indent("use ${use};");
+        $lines[] = $this->dumpHeader();
+        foreach ($this->uses as $use) {
+            $lines[] = $this->indent("use ${use};");
             $lines[] = '';
         }
-        foreach ($this->_properties as $property) {
-            $lines[] = $this->_indent($property->dump());
+        foreach ($this->properties as $property) {
+            $lines[] = $this->indent($property->dump());
             $lines[] = '';
         }
-        foreach ($this->_methods as $method) {
-            $lines[] = $this->_indent($method->dump());
+        foreach ($this->methods as $method) {
+            $lines[] = $this->indent($method->dump());
             $lines[] = '';
         }
-        if (!empty($this->_uses) || !empty($this->_properties) || !empty($this->_methods)) {
+        if (!empty($this->uses) || !empty($this->properties) || !empty($this->methods)) {
             array_pop($lines);
         }
-        $lines[] = $this->_dumpFooter();
+        $lines[] = $this->dumpFooter();
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
     }
 
     /**
      * @return string
      */
-    private function _dumpHeader()
+    private function dumpHeader()
     {
         $lines = [];
-        if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
+        if ($this->namespace) {
+            $lines[] = 'namespace ' . $this->namespace . ';';
             $lines[] = '';
         }
-        $classDeclaration = 'trait ' . $this->_name;
+        $classDeclaration = 'trait ' . $this->name;
 
         $lines[] = $classDeclaration;
         $lines[] = '{';
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
     }
 
     /**
      * @return string
      */
-    private function _dumpFooter()
+    private function dumpFooter()
     {
         return '}';
     }

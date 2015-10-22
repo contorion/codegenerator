@@ -6,13 +6,19 @@ class MockClass extends \CodeGeneratormocks\MockAbstractClass
 {
     const FOO = 1;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public $foo = [1, 2];
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public static $bar = [1, 2];
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $_bar = 1;
 
     private $_foo;

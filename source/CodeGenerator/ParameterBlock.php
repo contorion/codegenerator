@@ -5,19 +5,19 @@ namespace CodeGenerator;
 class ParameterBlock extends Block
 {
     /** @var string */
-    private $_name;
+    private $name;
 
     /** @var string|null */
-    private $_type;
+    private $type;
 
     /** @var mixed */
-    private $_defaultValue;
+    private $defaultValue;
 
     /** @var bool */
-    private $_optional;
+    private $optional;
 
     /** @var bool */
-    private $_passedByReference;
+    private $passedByReference;
 
     /**
      * @param string $name
@@ -32,18 +32,18 @@ class ParameterBlock extends Block
      */
     public function __construct($name, $type = null, $optional = null, $defaultValue = null, $passedByReference = null)
     {
-        $this->_name = (string)$name;
+        $this->name = (string)$name;
         if (null !== $type) {
-            $this->_type = (string)$type;
+            $this->type = (string)$type;
         }
-        $this->_optional = (bool)$optional;
+        $this->optional = (bool)$optional;
         if (null !== $defaultValue) {
-            if (!$this->_optional) {
+            if (!$this->optional) {
                 throw new \Exception('Cannot set default value for non-optional parameter');
             }
-            $this->_defaultValue = $defaultValue;
+            $this->defaultValue = $defaultValue;
         }
-        $this->_passedByReference = (bool)$passedByReference;
+        $this->passedByReference = (bool)$passedByReference;
     }
 
     /**
@@ -82,7 +82,7 @@ class ParameterBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -91,14 +91,14 @@ class ParameterBlock extends Block
     protected function dumpContent()
     {
         $content = '';
-        if ($this->_type) {
+        if ($this->type) {
             $content .= $this->_getType() . ' ';
         }
-        if ($this->_passedByReference) {
+        if ($this->passedByReference) {
             $content .= '&';
         }
-        $content .= '$' . $this->_name;
-        if ($this->_optional) {
+        $content .= '$' . $this->name;
+        if ($this->optional) {
             $content .= ' = ' . $this->_dumpDefaultValue();
         }
 
@@ -110,9 +110,9 @@ class ParameterBlock extends Block
      */
     protected function _getType()
     {
-        $type = $this->_type;
+        $type = $this->type;
         if (!in_array($type, [null, 'array', 'callable'], true)) {
-            $type = self::_normalizeClassName($type);
+            $type = self::normalizeClassName($type);
         }
 
         return $type;
@@ -120,10 +120,10 @@ class ParameterBlock extends Block
 
     protected function _dumpDefaultValue()
     {
-        if (null === $this->_defaultValue) {
+        if (null === $this->defaultValue) {
             return 'null';
         }
-        $value = new ValueBlock($this->_defaultValue);
+        $value = new ValueBlock($this->defaultValue);
 
         return $value->dump();
     }

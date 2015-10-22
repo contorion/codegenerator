@@ -4,18 +4,17 @@ namespace CodeGenerator;
 
 abstract class Block
 {
+    /** @var string */
+    protected static $indentation = '    ';
     /** @var  DocBlock */
     protected $docBlock;
-
-    /** @var string */
-    protected static $_indentation = '    ';
 
     /**
      * @param string $indentation
      */
     public static function setIndentation($indentation)
     {
-        self::$_indentation = (string)$indentation;
+        self::$indentation = (string)$indentation;
     }
 
     /**
@@ -23,13 +22,25 @@ abstract class Block
      *
      * @return string
      */
-    protected static function _normalizeClassName($className)
+    protected static function normalizeClassName($className)
     {
         if (strpos($className, '\\') !== 0) {
             $className = '\\' . $className;
         }
 
         return $className;
+    }
+
+    /**
+     * @param DocBlock $docBlock
+     *
+     * @return $this
+     */
+    public function setDocBlock($docBlock)
+    {
+        $this->docBlock = $docBlock;
+
+        return $this;
     }
 
     /**
@@ -46,11 +57,17 @@ abstract class Block
     public function dump()
     {
         if ($this->docBlock) {
-            return $this->docBlock . '' . $this->dumpContent();
+            $docBlockText = $this->docBlock->dump();
+            if ($docBlockText) {
+                $docBlockText .= PHP_EOL;
+            }
+
+            return $docBlockText . '' . $this->dumpContent();
         }
 
         return $this->dumpContent();
     }
+
     /**
      * @return string
      */
@@ -61,9 +78,9 @@ abstract class Block
      *
      * @return string
      */
-    protected function _indent($content)
+    protected function indent($content)
     {
-        return preg_replace('/(:?^|[\n])/', '$1' . self::$_indentation, $content);
+        return preg_replace('/(:?^|[\n])/', '$1' . self::$indentation, $content);
     }
 
     /**
@@ -72,9 +89,9 @@ abstract class Block
      *
      * @return string
      */
-    protected function _outdent($content, $untilUnsafe = null)
+    protected function outdent($content, $untilUnsafe = null)
     {
-        $indentation = self::$_indentation;
+        $indentation = self::$indentation;
         if (!$indentation) {
             return $content;
         }
@@ -97,11 +114,11 @@ abstract class Block
             }
         }
         foreach ($lines as $key => $line) {
-            $lines[$key] = preg_replace('/^' . preg_quote(self::$_indentation) . '/', '$1', $line);
+            $lines[$key] = preg_replace('/^' . preg_quote(self::$indentation) . '/', '$1', $line);
         }
         $content = implode(PHP_EOL, $lines);
         if ($untilUnsafe) {
-            $content = $this->_outdent($content, $untilUnsafe);
+            $content = $this->outdent($content, $untilUnsafe);
         }
 
         return $content;
@@ -112,11 +129,22 @@ abstract class Block
      *
      * @return string
      */
-    protected function _dumpLine($line)
+    protected function dumpLine($line)
     {
         $lines = func_get_args();
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
+    }
+
+    /**
+     * @param \Reflector $reflection
+     */
+    protected function setDocBlockFromReflection(\Reflector $reflection)
+    {
+        $block = DocBlock::createMethodDocBlockFromReflection($reflection);
+        if ($block) {
+            $this->setDocBlock($block);
+        }
     }
 
     /**
@@ -124,7 +152,7 @@ abstract class Block
      *
      * @return string
      */
-    protected function _dumpLines(array $lines)
+    protected function dumpLines(array $lines)
     {
         return implode(
             PHP_EOL,

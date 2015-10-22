@@ -4,25 +4,23 @@ namespace CodeGenerator;
 
 class PropertyBlock extends Block
 {
-    /** @var string|null */
-    protected $_docBlock;
     /** @var string */
-    private $_name;
+    private $name;
     /** @var string */
-    private $_visibility;
+    private $visibility;
 
     /** @var bool */
-    private $_static;
+    private $static;
 
     /** @var mixed */
-    private $_defaultValue;
+    private $defaultValue;
 
     /**
      * @param string $name
      */
     public function __construct($name)
     {
-        $this->_name = (string)$name;
+        $this->name = (string)$name;
         $this->setVisibility('public');
         $this->setStatic(false);
     }
@@ -32,7 +30,7 @@ class PropertyBlock extends Block
      */
     public function setVisibility($visibility)
     {
-        $this->_visibility = (string)$visibility;
+        $this->visibility = (string)$visibility;
     }
 
     /**
@@ -40,7 +38,7 @@ class PropertyBlock extends Block
      */
     public function setStatic($static)
     {
-        $this->_static = (bool)$static;
+        $this->static = (bool)$static;
     }
 
     /**
@@ -61,13 +59,13 @@ class PropertyBlock extends Block
      */
     public function extractFromReflection(\ReflectionProperty $reflection)
     {
-        $this->_setStaticFromReflection($reflection);
-        $this->_setVisibilityFromReflection($reflection);
-        $this->_setDefaultValueFromReflection($reflection);
-        $this->_setDocBlockFromReflection($reflection);
+        $this->setStaticFromReflection($reflection);
+        $this->setVisibilityFromReflection($reflection);
+        $this->setDefaultValueFromReflection($reflection);
+        $this->setDocBlockFromReflection($reflection);
     }
 
-    protected function _setStaticFromReflection(\ReflectionProperty $reflection)
+    protected function setStaticFromReflection(\ReflectionProperty $reflection)
     {
         if ($reflection->isStatic()) {
             $this->setStatic(true);
@@ -77,7 +75,7 @@ class PropertyBlock extends Block
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setVisibilityFromReflection(\ReflectionProperty $reflection)
+    protected function setVisibilityFromReflection(\ReflectionProperty $reflection)
     {
         if ($reflection->isPublic()) {
             $this->setVisibility('public');
@@ -93,7 +91,7 @@ class PropertyBlock extends Block
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setDefaultValueFromReflection(\ReflectionProperty $reflection)
+    protected function setDefaultValueFromReflection(\ReflectionProperty $reflection)
     {
         $defaultProperties = $reflection->getDeclaringClass()->getDefaultProperties();
         $value = $defaultProperties[$this->getName()];
@@ -107,7 +105,7 @@ class PropertyBlock extends Block
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -115,33 +113,12 @@ class PropertyBlock extends Block
      */
     public function setDefaultValue($value)
     {
-        $this->_defaultValue = $value;
-    }
-
-    protected function _setDocBlockFromReflection(\ReflectionProperty $reflection)
-    {
-        $docBlock = $reflection->getDocComment();
-        if ($docBlock) {
-            $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
-            $this->setDocBlock($docBlock);
-        }
-    }
-
-    /**
-     * @param string|null $docBlock
-     */
-    public function setDocBlock($docBlock)
-    {
-        if (null !== $docBlock) {
-            $docBlock = (string)$docBlock;
-        }
-        $this->_docBlock = $docBlock;
+        $this->defaultValue = $value;
     }
 
     protected function dumpContent()
     {
-        return $this->_dumpLine(
-            $this->_dumpDocBlock(),
+        return $this->dumpLine(
             $this->_dumpValue()
         );
     }
@@ -149,21 +126,13 @@ class PropertyBlock extends Block
     /**
      * @return string
      */
-    protected function _dumpDocBlock()
-    {
-        return $this->_docBlock;
-    }
-
-    /**
-     * @return string
-     */
     protected function _dumpValue()
     {
-        $content = $this->_visibility;
-        $content .= ($this->_static) ? ' static' : '';
-        $content .= ' $' . $this->_name;
-        if (null !== $this->_defaultValue) {
-            $value = new ValueBlock($this->_defaultValue);
+        $content = $this->visibility;
+        $content .= ($this->static) ? ' static' : '';
+        $content .= ' $' . $this->name;
+        if (null !== $this->defaultValue) {
+            $value = new ValueBlock($this->defaultValue);
             $content .= ' = ' . $value->dump();
         }
         $content .= ';';

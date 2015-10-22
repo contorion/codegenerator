@@ -5,14 +5,14 @@ namespace CodeGenerator;
 class ArrayBlock extends Block
 {
     /** @var array */
-    private $_value;
+    private $value;
 
     /**
      * @param array $value
      */
     public function __construct(array $value = null)
     {
-        $this->_value = (array)$value;
+        $this->value = (array)$value;
     }
 
     /**
@@ -22,7 +22,7 @@ class ArrayBlock extends Block
     {
         $entries = [];
         $isAssociative = $this->isAssociative();
-        foreach ($this->_value as $key => $value) {
+        foreach ($this->value as $key => $value) {
             $line = '';
             if ($isAssociative) {
                 $line .= $key . ' => ';
@@ -37,9 +37,9 @@ class ArrayBlock extends Block
         } else {
             $content = implode(",\n", $entries);
 
-            return $this->_dumpLine(
+            return $this->dumpLine(
                 '[',
-                $this->_indent($content),
+                $this->indent($content),
                 ']'
             );
         }
@@ -47,6 +47,6 @@ class ArrayBlock extends Block
 
     public function isAssociative()
     {
-        return (bool)count(array_filter(array_keys($this->_value), 'is_string'));
+        return (bool)count(array_filter(array_keys($this->value), 'is_string'));
     }
 }

@@ -4,10 +4,14 @@ namespace CodeGeneratormocks;
 
 trait MockTrait
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     public $foo = [1, 2];
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $_bar = 1;
 
     private $_foo;

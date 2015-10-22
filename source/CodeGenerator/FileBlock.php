@@ -5,26 +5,26 @@ namespace CodeGenerator;
 class FileBlock extends Block
 {
     /** @var Block[] */
-    private $_blocks = [];
+    private $blocks = [];
 
     /**
      * @param Block $block
      */
     public function addBlock(Block $block)
     {
-        $this->_blocks[] = $block;
+        $this->blocks[] = $block;
     }
 
     protected function dumpContent()
     {
         $lines = [];
         $lines[] = '<?php';
-        foreach ($this->_blocks as $block) {
+        foreach ($this->blocks as $block) {
             $lines[] = '';
             $lines[] = $block->dump();
         }
         $lines[] = '';
 
-        return $this->_dumpLines($lines);
+        return $this->dumpLines($lines);
     }
 }

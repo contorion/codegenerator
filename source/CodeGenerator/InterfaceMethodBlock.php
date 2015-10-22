@@ -29,15 +29,15 @@ class InterfaceMethodBlock extends FunctionBlock
     /**
      * @return string
      */
-    protected function _dumpHeader()
+    protected function dumpHeader()
     {
-        return 'public ' . parent::_dumpHeader();
+        return 'public ' . parent::dumpHeader();
     }
 
     /**
      * @return string
      */
-    protected function _dumpBody()
+    protected function dumpBody()
     {
         return ';';
     }
