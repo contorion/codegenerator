@@ -86,6 +86,14 @@ class ParameterBlock extends Block
     }
 
     /**
+     * @return mixed
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
+    /**
      * @return string
      */
     protected function dumpContent()
