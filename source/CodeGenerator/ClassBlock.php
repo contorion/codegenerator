@@ -19,6 +19,9 @@ class ClassBlock extends Block
     /** @var string[] */
     private $uses = [];
 
+    /** @var string[] */
+    private $importUses = [];
+
     /** @var ConstantBlock[] */
     private $constants = [];
 
@@ -214,6 +217,12 @@ class ClassBlock extends Block
         $lines = [];
         if ($this->namespace) {
             $lines[] = 'namespace ' . $this->namespace . ';';
+            $lines[] = '';
+        }
+        if (count($this->importUses)) {
+            foreach ($this->importUses as $import) {
+                $lines[] = 'use ' . $import . ';';
+            }
             $lines[] = '';
         }
         $classDeclaration = '';
