@@ -110,7 +110,10 @@ class ClassBlock extends Block
             }
         }
         foreach ($reflection->getConstants() as $name => $value) {
-            if (!$reflection->getParentClass() || ($reflection->getParentClass() && !$reflection->getParentClass()->hasConstant($name))) {
+            if (!$reflection->getParentClass() || ($reflection->getParentClass() && !$reflection->getParentClass()->hasConstant(
+                        $name
+                    ))
+            ) {
                 $class->addConstant(new ConstantBlock($name, $value));
             }
         }
@@ -239,7 +242,6 @@ class ClassBlock extends Block
         if ($this->namespace) {
             $lines[] = 'namespace ' . $this->namespace . ';';
             $lines[] = '';
-            $lines[] = '';
         }
         if (count($this->importUses)) {
             foreach ($this->importUses as $import) {
@@ -255,8 +257,10 @@ class ClassBlock extends Block
             if ($docBlockText) {
                 $docBlockText .= PHP_EOL;
             }
-            $content .= $docBlockText;
+        } else {
+            $docBlockText = "\n";
         }
+        $content .= $docBlockText;
 
         $classDeclaration = '';
         if ($this->abstract) {
