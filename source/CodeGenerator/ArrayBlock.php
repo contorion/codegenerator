@@ -25,7 +25,7 @@ class ArrayBlock extends Block
         foreach ($this->value as $key => $value) {
             $line = '';
             if ($isAssociative) {
-                $line .= $key . ' => ';
+                    $line .= '\'' . $key . '\' => ';
             }
             $value = new ValueBlock($value);
             $line .= $value->dump();
