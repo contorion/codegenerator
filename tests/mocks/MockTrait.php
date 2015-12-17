@@ -2,19 +2,12 @@
 
 namespace CodeGeneratormocks;
 
-class MockClass extends \CodeGeneratormocks\MockAbstractClass
+trait MockTrait
 {
-    const FOO = 1;
-
     /**
      * @var array
      */
     public $foo = [1, 2];
-
-    /**
-     * @var array
-     */
-    public static $bar = [1, 2];
 
     /**
      * @var int
@@ -37,10 +30,12 @@ class MockClass extends \CodeGeneratormocks\MockAbstractClass
 
     public function withTypeHinting(\Countable $countable, array $array, callable $callable)
     {
+        echo 1;
     }
 
     public function defaultValues($defaultValue = null, $defaultArray = [])
     {
+        echo 2;
     }
 
     public function withReferenceParam(&$param)

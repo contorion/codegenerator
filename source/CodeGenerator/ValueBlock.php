@@ -2,26 +2,30 @@
 
 namespace CodeGenerator;
 
-class ValueBlock extends Block {
-
+class ValueBlock extends Block
+{
     /** @var mixed */
-    private $_value;
+    private $value;
 
     /**
      * @param mixed $value
      */
-    public function __construct($value) {
-        $this->_value = $value;
+    public function __construct($value)
+    {
+        $this->value = $value;
     }
 
     /**
      * @return string
      */
-    public function dump() {
-        if (is_array($this->_value)) {
-            $array = new ArrayBlock($this->_value);
+    protected function dumpContent()
+    {
+        if (is_array($this->value)) {
+            $array = new ArrayBlock($this->value);
+
             return $array->dump();
         }
-        return var_export($this->_value, true);
+
+        return var_export($this->value, true);
     }
 }

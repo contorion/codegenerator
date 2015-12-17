@@ -2,28 +2,30 @@
 
 namespace CodeGenerator;
 
-class ArrayBlock extends Block {
-
+class ArrayBlock extends Block
+{
     /** @var array */
-    private $_value;
+    private $value;
 
     /**
      * @param array $value
      */
-    public function __construct(array $value = null) {
-        $this->_value = (array) $value;
+    public function __construct(array $value = null)
+    {
+        $this->value = (array)$value;
     }
 
     /**
      * @return string
      */
-    public function dump() {
-        $entries = array();
+    protected function dumpContent()
+    {
+        $entries = [];
         $isAssociative = $this->isAssociative();
-        foreach ($this->_value as $key => $value) {
+        foreach ($this->value as $key => $value) {
             $line = '';
             if ($isAssociative) {
-                $line .= $key . ' => ';
+                    $line .= '\'' . $key . '\' => ';
             }
             $value = new ValueBlock($value);
             $line .= $value->dump();
@@ -31,18 +33,20 @@ class ArrayBlock extends Block {
         }
         $content = implode(', ', $entries);
         if (strlen($content) < 100) {
-            return 'array(' . $content . ')';
+            return '[' . $content . ']';
         } else {
             $content = implode(",\n", $entries);
-            return $this->_dumpLine(
-                'array(',
-                $this->_indent($content),
-                ')'
+
+            return $this->dumpLine(
+                '[',
+                $this->indent($content),
+                ']'
             );
         }
     }
 
-    public function isAssociative() {
-        return (bool) count(array_filter(array_keys($this->_value), 'is_string'));
+    public function isAssociative()
+    {
+        return (bool)count(array_filter(array_keys($this->value), 'is_string'));
     }
 }

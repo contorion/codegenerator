@@ -2,122 +2,97 @@
 
 namespace CodeGenerator;
 
-class PropertyBlock extends Block {
-
+class PropertyBlock extends Block
+{
     /** @var string */
-    private $_name;
-
+    private $name;
     /** @var string */
-    private $_visibility;
+    private $visibility;
+
+    /** @var bool */
+    private $static;
 
     /** @var mixed */
-    private $_defaultValue;
-
-    /** @var string|null */
-    protected $_docBlock;
+    private $defaultValue;
 
     /**
      * @param string $name
      */
-    public function __construct($name) {
-        $this->_name = (string) $name;
-        $this->setVisibility('public');
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() {
-        return $this->_name;
+    public function __construct($name)
+    {
+        $this->name = (string)$name;
+        $this->setVisibility(self::VISIBILITY_PUBLIC);
+        $this->setStatic(false);
     }
 
     /**
      * @param string $visibility
      */
-    public function setVisibility($visibility) {
-        $this->_visibility = (string) $visibility;
+    public function setVisibility($visibility)
+    {
+        $this->visibility = (string)$visibility;
     }
 
     /**
-     * @param mixed $value
+     * @param boolean $static
      */
-    public function setDefaultValue($value) {
-        $this->_defaultValue = $value;
+    public function setStatic($static)
+    {
+        $this->static = (bool)$static;
     }
 
     /**
-     * @param string|null $docBlock
+     * @param \ReflectionProperty $reflection
+     * @return PropertyBlock
      */
-    public function setDocBlock($docBlock) {
-        if (null !== $docBlock) {
-            $docBlock = (string) $docBlock;
-        }
-        $this->_docBlock = $docBlock;
-    }
+    public static function buildFromReflection(\ReflectionProperty $reflection)
+    {
+        $property = new self($reflection->getName());
+        $property->extractFromReflection($reflection);
 
-    public function dump() {
-        return $this->_dumpLine(
-            $this->_dumpDocBlock(),
-            $this->_dumpValue()
-        );
+        // $property->setDefaultValue($reflection->getValue());
+        return $property;
     }
 
     /**
      * @param \ReflectionProperty $reflection
      */
-    public function extractFromReflection(\ReflectionProperty $reflection) {
-        $this->_setVisibilityFromReflection($reflection);
-        $this->_setDefaultValueFromReflection($reflection);
-        $this->_setDocBlockFromReflection($reflection);
+    public function extractFromReflection(\ReflectionProperty $reflection)
+    {
+        $this->setStaticFromReflection($reflection);
+        $this->setVisibilityFromReflection($reflection);
+        $this->setDefaultValueFromReflection($reflection);
+        $this->setDocBlockFromReflection($reflection);
     }
 
-    /**
-     * @return string
-     */
-    protected function _dumpDocBlock() {
-        return $this->_docBlock;
-    }
-
-    /**
-     * @return string
-     */
-    protected function _dumpValue() {
-        $content = $this->_visibility . ' $' . $this->_name;
-        if (null !== $this->_defaultValue) {
-            $value = new ValueBlock($this->_defaultValue);
-            $content .= ' = ' . $value->dump();
+    protected function setStaticFromReflection(\ReflectionProperty $reflection)
+    {
+        if ($reflection->isStatic()) {
+            $this->setStatic(true);
         }
-        $content .= ';';
-        return $content;
     }
 
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setVisibilityFromReflection(\ReflectionProperty $reflection) {
+    protected function setVisibilityFromReflection(\ReflectionProperty $reflection)
+    {
         if ($reflection->isPublic()) {
-            $this->setVisibility('public');
+            $this->setVisibility(self::VISIBILITY_PUBLIC);
         }
         if ($reflection->isProtected()) {
-            $this->setVisibility('protected');
+            $this->setVisibility(self::VISIBILITY_PROTECTED);
         }
         if ($reflection->isPrivate()) {
-            $this->setVisibility('private');
-        }
-    }
-
-    protected function _setDocBlockFromReflection(\ReflectionProperty $reflection) {
-        $docBlock = $reflection->getDocComment();
-        if ($docBlock) {
-            $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
-            $this->setDocBlock($docBlock);
+            $this->setVisibility(self::VISIBILITY_PRIVATE);
         }
     }
 
     /**
      * @param \ReflectionProperty $reflection
      */
-    protected function _setDefaultValueFromReflection(\ReflectionProperty $reflection) {
+    protected function setDefaultValueFromReflection(\ReflectionProperty $reflection)
+    {
         $defaultProperties = $reflection->getDeclaringClass()->getDefaultProperties();
         $value = $defaultProperties[$this->getName()];
         if (null !== $value) {
@@ -126,13 +101,42 @@ class PropertyBlock extends Block {
     }
 
     /**
-     * @param \ReflectionProperty $reflection
-     * @return PropertyBlock
+     * @return string
      */
-    public static function buildFromReflection(\ReflectionProperty $reflection) {
-        $property = new self($reflection->getName());
-        $property->extractFromReflection($reflection);
-        // $property->setDefaultValue($reflection->getValue());
-        return $property;
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setDefaultValue($value)
+    {
+        $this->defaultValue = $value;
+    }
+
+    protected function dumpContent()
+    {
+        return $this->dumpLine(
+            $this->_dumpValue()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function _dumpValue()
+    {
+        $content = $this->visibility;
+        $content .= ($this->static) ? ' ' . self::KEYWORD_STATIC : '';
+        $content .= ' $' . $this->name;
+        if (null !== $this->defaultValue) {
+            $value = new ValueBlock($this->defaultValue);
+            $content .= ' = ' . $value->dump();
+        }
+        $content .= ';';
+
+        return $content;
     }
 }

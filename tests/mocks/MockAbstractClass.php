@@ -1,8 +1,8 @@
 <?php
 
-namespace CodeGeneratorMocks;
+namespace CodeGeneratormocks;
 
-abstract class MockAbstractClass implements \Countable {
-
+abstract class MockAbstractClass implements \Countable
+{
     abstract protected function abstractMethod();
 }

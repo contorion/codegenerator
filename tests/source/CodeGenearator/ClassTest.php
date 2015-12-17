@@ -5,10 +5,11 @@ namespace TestsCodeGenerator;
 use CodeGenerator\ClassBlock;
 use CodeGenerator\FileBlock;
 
-class CG_ClassTest extends \PHPUnit_Framework_TestCase {
-
-    public function testDump() {
-        $classes = array('CodeGeneratorMocks\\MockAbstractClass', 'CodeGeneratorMocks\\MockClass');
+class ClassTest extends \PHPUnit_Framework_TestCase
+{
+    public function testDump()
+    {
+        $classes = ['CodeGeneratormocks\\MockAbstractClass', 'CodeGeneratormocks\\MockClass'];
         foreach ($classes as $className) {
             $file = new FileBlock();
 
@@ -22,9 +23,10 @@ class CG_ClassTest extends \PHPUnit_Framework_TestCase {
         }
     }
 
-    public function testGetName() {
+    public function testGetName()
+    {
         $className = 'Foo';
-        $class = new ClassBlock($className, 'Bar', array('Countable'));
+        $class = new ClassBlock($className, 'Bar', ['Countable']);
         $this->assertSame($className, $class->getName());
     }
 }

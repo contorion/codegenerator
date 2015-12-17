@@ -2,24 +2,25 @@
 
 namespace CodeGenerator;
 
-class MethodBlock extends FunctionBlock {
-
+class MethodBlock extends FunctionBlock
+{
     /** @var string */
-    private $_visibility;
+    private $visibility;
 
-    /** @var boolean */
-    private $_static;
+    /** @var bool */
+    private $static;
 
-    /** @var boolean */
-    private $_abstract;
+    /** @var bool */
+    private $abstract;
 
     /**
-     * @param string               $name
+     * @param string $name
      * @param callable|string|null $body
      */
-    public function __construct($name, $body = null) {
+    public function __construct($name, $body = null)
+    {
         $this->setName($name);
-        $this->setVisibility('public');
+        $this->setVisibility(self::VISIBILITY_PUBLIC);
         $this->setStatic(false);
         $this->setAbstract(false);
         parent::__construct($body);
@@ -28,28 +29,45 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param string $visibility
      */
-    public function setVisibility($visibility) {
-        $this->_visibility = (string) $visibility;
+    public function setVisibility($visibility)
+    {
+        $this->visibility = (string)$visibility;
     }
 
     /**
-     * @param boolean $static
+     * @param bool $static
      */
-    public function setStatic($static) {
-        $this->_static = (bool) $static;
+    public function setStatic($static)
+    {
+        $this->static = (bool)$static;
     }
 
     /**
-     * @param boolean $abstract
+     * @param bool $abstract
      */
-    public function setAbstract($abstract) {
-        $this->_abstract = (bool) $abstract;
+    public function setAbstract($abstract)
+    {
+        $this->abstract = (bool)$abstract;
+    }
+
+    /**
+     * @param \ReflectionMethod $reflection
+     *
+     * @return MethodBlock
+     */
+    public static function buildFromReflection(\ReflectionMethod $reflection)
+    {
+        $method = new self($reflection->getName());
+        $method->extractFromReflection($reflection);
+
+        return $method;
     }
 
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function extractFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function extractFromReflection(\ReflectionFunctionAbstract $reflection)
+    {
         parent::extractFromReflection($reflection);
         if ($reflection instanceof \ReflectionMethod) {
             $this->setVisibilityFromReflection($reflection);
@@ -61,59 +79,56 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setVisibilityFromReflection(\ReflectionMethod $reflection) {
+    public function setVisibilityFromReflection(\ReflectionMethod $reflection)
+    {
         if ($reflection->isPublic()) {
-            $this->setVisibility('public');
+            $this->setVisibility(self::VISIBILITY_PUBLIC);
         }
         if ($reflection->isProtected()) {
-            $this->setVisibility('protected');
+            $this->setVisibility(self::VISIBILITY_PROTECTED);
         }
         if ($reflection->isPrivate()) {
-            $this->setVisibility('private');
+            $this->setVisibility(self::VISIBILITY_PRIVATE);
         }
     }
 
     /**
      * @param \ReflectionMethod $reflection
      */
-    public function setAbstractFromReflection(\ReflectionMethod $reflection) {
-        $this->setAbstract($reflection->isAbstract());
-    }
-
-    /**
-     * @param \ReflectionMethod $reflection
-     */
-    public function setStaticFromReflection(\ReflectionMethod $reflection) {
+    public function setStaticFromReflection(\ReflectionMethod $reflection)
+    {
         $this->setStatic($reflection->isStatic());
     }
 
-    protected function _dumpHeader() {
+    /**
+     * @param \ReflectionMethod $reflection
+     */
+    public function setAbstractFromReflection(\ReflectionMethod $reflection)
+    {
+        $this->setAbstract($reflection->isAbstract());
+    }
+
+    protected function dumpHeader()
+    {
         $code = '';
-        if ($this->_abstract) {
-            $code .= 'abstract ';
+        if ($this->abstract) {
+            $code .= self::KEYWORD_ABSTRACT . ' ';
         }
-        $code .= $this->_visibility;
-        if ($this->_static) {
-            $code .= ' static';
+        $code .= $this->visibility;
+        if ($this->static) {
+            $code .= ' ' . self::KEYWORD_STATIC;
         }
-        $code .= ' ' . parent::_dumpHeader();
+        $code .= ' ' . parent::dumpHeader();
+
         return $code;
     }
 
-    protected function _dumpBody() {
-        if ($this->_abstract) {
+    protected function dumpBody()
+    {
+        if ($this->abstract) {
             return ';';
         }
-        return parent::_dumpBody();
-    }
 
-    /**
-     * @param \ReflectionMethod $reflection
-     * @return MethodBlock
-     */
-    public static function buildFromReflection(\ReflectionMethod $reflection) {
-        $method = new self($reflection->getName());
-        $method->extractFromReflection($reflection);
-        return $method;
+        return parent::dumpBody();
     }
 }

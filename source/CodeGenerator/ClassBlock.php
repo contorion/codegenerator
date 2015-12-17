@@ -2,42 +2,46 @@
 
 namespace CodeGenerator;
 
-class ClassBlock extends Block {
+class ClassBlock extends Block
+{
+    /** @var string */
+    private $name;
 
     /** @var string */
-    private $_name;
+    private $namespace;
 
     /** @var string */
-    private $_namespace;
-
-    /** @var string */
-    private $_parentClassName;
+    private $parentClassName;
 
     /** @var string[] */
-    private $_interfaces;
+    private $interfaces;
 
     /** @var string[] */
-    private $_uses = array();
+    private $uses = [];
+
+    /** @var string[] */
+    private $importUses = [];
 
     /** @var ConstantBlock[] */
-    private $_constants = array();
+    private $constants = [];
 
     /** @var PropertyBlock[] */
-    private $_properties = array();
+    private $properties = [];
 
     /** @var MethodBlock[] */
-    private $_methods = array();
+    private $methods = [];
 
-    /** @var boolean */
-    private $_abstract;
+    /** @var bool */
+    private $abstract;
 
     /**
-     * @param string      $name
+     * @param string $name
      * @param string|null $parentClassName
-     * @param array|null  $interfaces
+     * @param array|null $interfaces
      */
-    public function __construct($name, $parentClassName = null, array $interfaces = null) {
-        $this->_name = (string) $name;
+    public function __construct($name, $parentClassName = null, array $interfaces = null)
+    {
+        $this->name = (string)$name;
         if (null !== $parentClassName) {
             $this->setParentClassName($parentClassName);
         }
@@ -47,150 +51,38 @@ class ClassBlock extends Block {
     }
 
     /**
-     * @return string
-     */
-    public function getName() {
-        return $this->_name;
-    }
-
-    /**
      * @param string $parentClassName
      */
-    public function setParentClassName($parentClassName) {
-        $this->_parentClassName = (string) $parentClassName;
-    }
-
-    /**
-     * @param string $namespace
-     */
-    public function setNamespace($namespace) {
-        $this->_namespace = (string) $namespace;
+    public function setParentClassName($parentClassName)
+    {
+        $this->parentClassName = (string)$parentClassName;
     }
 
     /**
      * @param string[] $interfaces
      */
-    public function setInterfaces(array $interfaces) {
+    public function setInterfaces(array $interfaces)
+    {
         foreach ($interfaces as $interface) {
             $this->addInterface($interface);
         }
     }
 
     /**
-     * @param boolean $abstract
-     */
-    public function setAbstract($abstract) {
-        $this->_abstract = (bool) $abstract;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function addUse($name) {
-        $this->_uses[] = $name;
-    }
-
-    /**
-     * @param ConstantBlock $constant
-     */
-    public function addConstant(ConstantBlock $constant) {
-        $this->_constants[$constant->getName()] = $constant;
-    }
-
-    /**
-     * @param PropertyBlock $property
-     */
-    public function addProperty(PropertyBlock $property) {
-        $this->_properties[$property->getName()] = $property;
-    }
-
-    /**
-     * @param MethodBlock $method
-     */
-    public function addMethod(MethodBlock $method) {
-        $this->_methods[$method->getName()] = $method;
-    }
-
-    /**
      * @param string $interface
      */
-    public function addInterface($interface) {
-        $this->_interfaces[] = $interface;
+    public function addInterface($interface)
+    {
+        $this->interfaces[] = $interface;
     }
 
     /**
-     * @return string
+     * @param \ReflectionClass $reflection
+     *
+     * @return ClassBlock
      */
-    public function dump() {
-        $lines = array();
-        $lines[] = $this->_dumpHeader();
-        foreach ($this->_uses as $use) {
-            $lines[] = '';
-            $lines[] = $this->_indent("use ${use};");
-        }
-        foreach ($this->_constants as $constant) {
-            $lines[] = '';
-            $lines[] = $this->_indent($constant->dump());
-        }
-        foreach ($this->_properties as $property) {
-            $lines[] = '';
-            $lines[] = $this->_indent($property->dump());
-        }
-        foreach ($this->_methods as $method) {
-            $lines[] = '';
-            $lines[] = $this->_indent($method->dump());
-        }
-        $lines[] = $this->_dumpFooter();
-        return $this->_dumpLines($lines);
-    }
-
-    /**
-     * @return string
-     */
-    private function _dumpHeader() {
-        $lines = array();
-        if ($this->_namespace) {
-            $lines[] = 'namespace ' . $this->_namespace . ';';
-            $lines[] = '';
-        }
-        $classDeclaration = '';
-        if ($this->_abstract) {
-            $classDeclaration .= 'abstract ';
-        }
-        $classDeclaration .= 'class ' . $this->_name;
-        if ($this->_parentClassName) {
-            $classDeclaration .= ' extends ' . $this->_getParentClassName();
-        }
-        if ($this->_interfaces) {
-            $classDeclaration .= ' implements ' . implode(', ', $this->_getInterfaces());
-        }
-        $classDeclaration .= ' {';
-        $lines[] = $classDeclaration;
-        return $this->_dumpLines($lines);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function _getInterfaces() {
-        return array_map(array('\\CodeGenerator\\ClassBlock', '_normalizeClassName'), $this->_interfaces);
-    }
-
-    /**
-     * @return string
-     */
-    private  function _getParentClassName() {
-        return self::_normalizeClassName($this->_parentClassName);
-    }
-
-    /**
-     * @return string
-     */
-    private function _dumpFooter() {
-        return '}';
-    }
-
-    public static function buildFromReflection(\ReflectionClass $reflection) {
+    public static function buildFromReflection(\ReflectionClass $reflection)
+    {
         $class = new self($reflection->getShortName());
         $class->setNamespace($reflection->getNamespaceName());
         $reflectionParentClass = $reflection->getParentClass();
@@ -218,10 +110,188 @@ class ClassBlock extends Block {
             }
         }
         foreach ($reflection->getConstants() as $name => $value) {
-            if (!$reflection->getParentClass()->hasConstant($name)) {
+            if (!$reflection->getParentClass() || ($reflection->getParentClass() && !$reflection->getParentClass()->hasConstant(
+                        $name
+                    ))
+            ) {
                 $class->addConstant(new ConstantBlock($name, $value));
             }
         }
+
         return $class;
+    }
+
+    /**
+     * @param string $namespace
+     */
+    public function setNamespace($namespace)
+    {
+        $this->namespace = (string)$namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * @param bool $abstract
+     */
+    public function setAbstract($abstract)
+    {
+        $this->abstract = (bool)$abstract;
+    }
+
+    /**
+     * @param MethodBlock $method
+     */
+    public function addMethod(MethodBlock $method)
+    {
+        $this->methods[$method->getName()] = $method;
+    }
+
+    /**
+     * @param PropertyBlock $property
+     */
+    public function addProperty(PropertyBlock $property)
+    {
+        $this->properties[$property->getName()] = $property;
+    }
+
+    /**
+     * @param ConstantBlock $constant
+     */
+    public function addConstant(ConstantBlock $constant)
+    {
+        $this->constants[$constant->getName()] = $constant;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addUse($name)
+    {
+        $this->uses[] = $name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addImportUse($name)
+    {
+        $this->importUses[] = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function dump()
+    {
+        return $this->dumpContent();
+    }
+
+    /**
+     * @return string
+     */
+    protected function dumpContent()
+    {
+        $lines = [];
+        $lines[] = $this->dumpHeader();
+        foreach ($this->uses as $use) {
+            $lines[] = $this->indent("use ${use};");
+            $lines[] = '';
+        }
+        foreach ($this->constants as $constant) {
+            $lines[] = $this->indent($constant->dump());
+            $lines[] = '';
+        }
+        foreach ($this->properties as $property) {
+            $lines[] = $this->indent($property->dump());
+            $lines[] = '';
+        }
+        foreach ($this->methods as $method) {
+            $lines[] = $this->indent($method->dump());
+            $lines[] = '';
+        }
+        if (!empty($this->uses) || !empty($this->constants) || !empty($this->properties) || !empty($this->methods)) {
+            array_pop($lines);
+        }
+
+        $lines[] = $this->dumpFooter();
+
+        return $this->dumpLines($lines);
+    }
+
+    /**
+     * @return string
+     */
+    private function dumpHeader()
+    {
+        $lines = [];
+        if ($this->namespace) {
+            $lines[] = 'namespace ' . $this->namespace . ';';
+            $lines[] = '';
+        }
+        if (count($this->importUses)) {
+            foreach ($this->importUses as $import) {
+                $lines[] = 'use ' . $import . ';';
+            }
+            $lines[] = '';
+        }
+
+        if ($this->docBlock) {
+            $lines[] = $this->docBlock->dump();
+        }
+
+        $classDeclaration = '';
+        if ($this->abstract) {
+            $classDeclaration .= self::KEYWORD_ABSTRACT . ' ';
+        }
+        $classDeclaration .= 'class ' . $this->name;
+        if ($this->parentClassName) {
+            $classDeclaration .= ' extends ' . $this->getParentClassName();
+        }
+        if ($this->interfaces) {
+            $classDeclaration .= ' implements ' . implode(', ', $this->getInterfaces());
+        }
+        $lines[] = $classDeclaration;
+        $lines[] = '{';
+
+        return $this->dumpLines($lines);
+    }
+
+    /**
+     * @return string
+     */
+    private function getParentClassName()
+    {
+        return self::normalizeClassName($this->parentClassName);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getInterfaces()
+    {
+        return array_map(['\\CodeGenerator\\ClassBlock', 'normalizeClassName'], $this->interfaces);
+    }
+
+    /**
+     * @return string
+     */
+    private function dumpFooter()
+    {
+        return '}';
     }
 }

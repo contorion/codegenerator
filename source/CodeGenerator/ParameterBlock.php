@@ -2,96 +2,57 @@
 
 namespace CodeGenerator;
 
-class ParameterBlock extends Block {
-
+class ParameterBlock extends Block
+{
     /** @var string */
-    private $_name;
+    private $name;
 
     /** @var string|null */
-    private $_type;
+    private $type;
 
     /** @var mixed */
-    private $_defaultValue;
+    private $defaultValue;
 
-    /** @var boolean */
-    private $_optional;
+    /** @var bool */
+    private $optional;
 
-    /** @var boolean */
-    private $_passedByReference;
+    /** @var bool */
+    private $passedByReference;
 
     /**
-     * @param string       $name
-     * @param string|null  $type
-     * @param null         $optional
-     * @param mixed|null   $defaultValue
-     * @param boolean|null $passedByReference
+     * @param string $name
+     * @param string|null $type
+     * @param null $optional
+     * @param mixed|null $defaultValue
+     * @param bool|null $passedByReference
+     *
      * @throws \Exception
+     *
      * @internal param bool|null $isOptional
      */
-    public function __construct($name, $type = null, $optional = null, $defaultValue = null, $passedByReference = null) {
-        $this->_name = (string) $name;
+    public function __construct($name, $type = null, $optional = null, $defaultValue = null, $passedByReference = null)
+    {
+        $this->name = (string)$name;
         if (null !== $type) {
-            $this->_type = (string) $type;
+            $this->type = (string)$type;
         }
-        $this->_optional = (bool) $optional;
+        $this->optional = (bool)$optional;
         if (null !== $defaultValue) {
-            if (!$this->_optional) {
+            if (!$this->optional) {
                 throw new \Exception('Cannot set default value for non-optional parameter');
             }
-            $this->_defaultValue = $defaultValue;
+            $this->defaultValue = $defaultValue;
         }
-        $this->_passedByReference = (bool) $passedByReference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() {
-        return $this->_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function dump() {
-        $content = '';
-        if ($this->_type) {
-            $content .= $this->_getType() . ' ';
-        }
-        if ($this->_passedByReference) {
-            $content .= '&';
-        }
-        $content .= '$' . $this->_name;
-        if ($this->_optional) {
-            $content .= ' = ' . $this->_dumpDefaultValue();
-        }
-        return $content;
-    }
-
-    protected function _dumpDefaultValue() {
-        if (null === $this->_defaultValue) {
-            return 'null';
-        }
-        $value = new ValueBlock($this->_defaultValue);
-        return $value->dump();
-    }
-
-    /**
-     * @return null|string
-     */
-    protected function _getType() {
-        $type = $this->_type;
-        if (!in_array($type, [null, 'array', 'callable'], true)) {
-            $type = self::_normalizeClassName($type);
-        }
-        return $type;
+        $this->passedByReference = (bool)$passedByReference;
     }
 
     /**
      * @param \ReflectionParameter $reflection
+     *
      * @return ParameterBlock
      */
-    public static function buildFromReflection(\ReflectionParameter $reflection) {
+    public static function buildFromReflection(\ReflectionParameter $reflection)
+    {
         $type = null;
         if ($reflection->isCallable()) {
             $type = 'callable';
@@ -106,6 +67,80 @@ class ParameterBlock extends Block {
         if ($reflection->isDefaultValueAvailable()) {
             $defaultValue = $reflection->getDefaultValue();
         }
-        return new self($reflection->getName(), $type, $reflection->isOptional(), $defaultValue, $reflection->isPassedByReference());
+
+        return new self(
+            $reflection->getName(),
+            $type,
+            $reflection->isOptional(),
+            $defaultValue,
+            $reflection->isPassedByReference()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOptional()
+    {
+        return $this->optional;
+    }
+
+    /**
+     * @return string
+     */
+    protected function dumpContent()
+    {
+        $content = '';
+        if ($this->type) {
+            $content .= $this->getType() . ' ';
+        }
+        if ($this->passedByReference) {
+            $content .= '&';
+        }
+        $content .= '$' . $this->name;
+        if ($this->optional) {
+            $content .= ' = ' . $this->_dumpDefaultValue();
+        }
+
+        return $content;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType()
+    {
+        $type = $this->type;
+        if (!in_array($type, [null, 'array', 'callable'], true)) {
+            $type = self::normalizeClassName($type);
+        }
+
+        return $type;
+    }
+
+    protected function _dumpDefaultValue()
+    {
+        if (null === $this->defaultValue) {
+            return 'null';
+        }
+        $value = new ValueBlock($this->defaultValue);
+
+        return $value->dump();
     }
 }
